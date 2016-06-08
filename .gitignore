@@ -1,0 +1,33 @@
+/build-tools
+/c4c-integration
+/hybris
+/hybris-dependencies
+/hybris-ems
+/hybris-Mobile-Apps-SDK
+/hybris-sbg
+/installer
+/licenses
+/META-INF
+/workspace
+README
+*.bat
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+# IDE files
+/.idea/
+*.iml
+/logs
+
+# Build files
+/target/
+/.settings/
+*.classpath
+*.project
+/nb-configuration.xml
+/bin/

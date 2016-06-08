@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="utf-8"?><testclasses><bonstorefacades><testclass>org.bonstore.facades.suggestion.impl.DefaultSimpleSuggestionFacadeTest</testclass><testclass>org.bonstore.facades.suggestion.DefaultSimpleSuggestionFacadeIntegrationTest</testclass></bonstorefacades></testclasses>
