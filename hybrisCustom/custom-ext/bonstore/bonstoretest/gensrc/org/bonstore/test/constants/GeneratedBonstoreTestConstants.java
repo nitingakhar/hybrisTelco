@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 7, 2016 4:33:31 PM                      ---
+ * --- Generated at Jun 9, 2016 3:48:21 PM                      ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.test.constants;

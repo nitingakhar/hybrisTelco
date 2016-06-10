@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 7, 2016 4:33:31 PM                      ---
+ * --- Generated at Jun 9, 2016 3:48:21 PM                      ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.core.constants;
@@ -20,11 +20,17 @@ public class GeneratedBonstoreCoreConstants
 		public static final String APPARELSIZEVARIANTPRODUCT = "ApparelSizeVariantProduct".intern();
 		public static final String APPARELSTYLEVARIANTPRODUCT = "ApparelStyleVariantProduct".intern();
 		public static final String ELECTRONICSCOLORVARIANTPRODUCT = "ElectronicsColorVariantProduct".intern();
+		public static final String ORGANIZATION = "Organization".intern();
 		public static final String SWATCHCOLORENUM = "SwatchColorEnum".intern();
 	}
 	public static class Attributes
 	{
-		// no constants defined.
+		public static class Customer
+		{
+			public static final String ATTEMPTCOUNT = "attemptCount".intern();
+			public static final String ORGANIZATIONS = "organizations".intern();
+			public static final String STATUS = "status".intern();
+		}
 	}
 	public static class Enumerations
 	{
@@ -43,6 +49,10 @@ public class GeneratedBonstoreCoreConstants
 			public static final String WHITE = "WHITE".intern();
 			public static final String YELLOW = "YELLOW".intern();
 		}
+	}
+	public static class Relations
+	{
+		public static final String CUSTOMERORGANIZATIONRELATION = "CustomerOrganizationRelation".intern();
 	}
 	
 	protected GeneratedBonstoreCoreConstants()
