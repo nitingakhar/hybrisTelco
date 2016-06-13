@@ -38,21 +38,21 @@
 	
 	<!--  Example how to override a manager -->
 	<!--
-	<bean id="core.productManager"   class="org.bonstorehmc.jalo.BonstorehmcProductManager" 	init-method="init"	destroy-method="destroy" />
+	<bean id="core.productManager"   class="org.bonstore.hmc.jalo.BonstorehmcProductManager" 	init-method="init"	destroy-method="destroy" />
 	-->
 	
 	
  	<!--  Example how to configure the class to use for jalo session creation -->
 	<!--
 	<bean id="jalosession"   class="de.hybris.platform.jalo.JaloSessionFactory">
-		<property name="targetClassName" value="org.bonstorehmc.jalo.BonstorehmcJaloSession"/>
+		<property name="targetClassName" value="org.bonstore.hmc.jalo.BonstorehmcJaloSession"/>
 	</bean>
 	-->
 
 	
 	<!--  Example how to override an item  -->
 	<!-- 
-	<bean id="de.hybris.platform.jalo.product.Product" class="org.bonstorehmc.jalo.BonstorehmcProduct" scope="prototype" />		
+	<bean id="de.hybris.platform.jalo.product.Product" class="org.bonstore.hmc.jalo.BonstorehmcProduct" scope="prototype" />		
  	-->
 
 	<!--  
@@ -61,7 +61,7 @@
      -->
 	
 	<!-- 
-	<bean id="bonstorehmcProfBean" class="org.bonstorehmc.aop.BonstorehmcProfilingAspect"/>
+	<bean id="bonstorehmcProfBean" class="org.bonstore.hmc.aop.BonstorehmcProfilingAspect"/>
 	<aop:config proxy-target-class="true">
   		<aop:aspect id="bonstorehmcProfAspect" ref="bonstorehmcProfBean" >
     	  <aop:pointcut id="profiledMethods" 

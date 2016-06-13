@@ -9,7 +9,7 @@
  * Confidential Information and shall use it only in accordance with the 
  * terms of the license agreement you entered into with SAP Hybris.
  */
-package org.bonstorehmc.jalo;
+package org.bonstore.hmc.jalo;
 
 import static org.junit.Assert.assertTrue;
 

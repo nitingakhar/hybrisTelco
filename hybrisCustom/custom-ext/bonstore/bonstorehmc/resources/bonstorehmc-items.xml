@@ -21,7 +21,7 @@
 <!--
 		<itemtype generate="true"
 		   code="MyProduct"
-		   jaloclass="org.bonstorehmc.jalo.MyProduct"
+		   jaloclass="org.bonstore.hmc.jalo.MyProduct"
 		   extends="Product"
 		   autocreate="true"
 	   >

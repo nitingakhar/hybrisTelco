@@ -36,7 +36,7 @@
 	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext/bonstore/bonstoretest"/>
 	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext/bonstore/bonstorestorefront"/>
 	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext/bonstore/bonstorecockpits"/>
-	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext/bonstore/bonstorehmc"/>	
+	<extension dir="${HYBRIS_BIN_DIR}/../../hybrisCustom/custom-ext/bonstore/bonstorehmc"/>
 	
     <webapp contextroot='entitlements-web' path='${HYBRIS_BIN_DIR}/../../hybris-ems/binary/entitlements-web.war' />
     <webapp contextroot='hybris-cis-mock-subscription-web' path='${HYBRIS_BIN_DIR}/../../hybris-sbg/binary/hybris-cis-mock-subscription-web.war' />

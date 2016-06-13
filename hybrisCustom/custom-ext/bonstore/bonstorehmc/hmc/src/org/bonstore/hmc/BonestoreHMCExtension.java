@@ -11,6 +11,7 @@
  */
 package org.bonstore.hmc;
 
+
 import de.hybris.platform.hmc.AbstractEditorMenuChip;
 import de.hybris.platform.hmc.AbstractExplorerMenuTreeNodeChip;
 import de.hybris.platform.hmc.EditorTabChip;
@@ -29,20 +30,15 @@ import java.util.ResourceBundle;
 import org.apache.log4j.Logger;
 
 
-/**
- * Provides necessary meta information about the cuppytrail hmc extension.
- *
- *
- * @version ExtGen v4.1
- */
-public class BonstoreHMCExtension extends HMCExtension
+
+public class BonestoreHMCExtension extends HMCExtension
 {
 	/** Edit the local|project.properties to change logging behavior (properties log4j.*). */
 	@SuppressWarnings("unused")
-	private static final Logger LOG = Logger.getLogger(BonstoreHMCExtension.class.getName());
+	private static final Logger LOG = Logger.getLogger(BonestoreHMCExtension.class.getName());
 
 	/** Path to the resource bundles. */
-	public final static String RESOURCE_PATH = "de.hybris.platform.cuppytrail.hmc.locales";
+	public final static String RESOURCE_PATH = "org.bonstore.hmc.locales";
 
 	/**
 	 * @see HMCExtension#getTreeNodeChips(de.hybris.platform.hmc.webchips.DisplayState,

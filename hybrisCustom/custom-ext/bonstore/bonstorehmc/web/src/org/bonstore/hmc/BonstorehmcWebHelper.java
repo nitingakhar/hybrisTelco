@@ -9,7 +9,7 @@
  * Confidential Information and shall use it only in accordance with the 
  * terms of the license agreement you entered into with SAP Hybris.
  */
-package org.bonstorehmc;
+package org.bonstore.hmc;
 
 import org.apache.log4j.Logger;
 

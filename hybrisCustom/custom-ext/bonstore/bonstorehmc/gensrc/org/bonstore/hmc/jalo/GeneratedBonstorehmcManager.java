@@ -1,17 +1,17 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 9, 2016 3:48:21 PM                      ---
+ * --- Generated at Jun 10, 2016 1:47:33 PM                     ---
  * ----------------------------------------------------------------
  */
-package org.bonstorehmc.jalo;
+package org.bonstore.hmc.jalo;
 
 import de.hybris.platform.jalo.Item;
 import de.hybris.platform.jalo.Item.AttributeMode;
 import de.hybris.platform.jalo.extension.Extension;
 import java.util.HashMap;
 import java.util.Map;
-import org.bonstorehmc.constants.BonstorehmcConstants;
+import org.bonstore.hmc.constants.BonstorehmcConstants;
 
 /**
  * Generated class for type <code>BonstorehmcManager</code>.

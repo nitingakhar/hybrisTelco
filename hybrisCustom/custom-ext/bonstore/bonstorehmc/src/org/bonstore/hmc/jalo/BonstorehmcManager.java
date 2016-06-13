@@ -9,7 +9,7 @@
  * Confidential Information and shall use it only in accordance with the 
  * terms of the license agreement you entered into with SAP Hybris.
  */
-package org.bonstorehmc.jalo;
+package org.bonstore.hmc.jalo;
 
 import de.hybris.platform.core.Registry;
 import de.hybris.platform.util.JspContext;
@@ -18,7 +18,7 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import org.bonstorehmc.constants.BonstorehmcConstants;
+import org.bonstore.hmc.constants.BonstorehmcConstants;
 
 
 

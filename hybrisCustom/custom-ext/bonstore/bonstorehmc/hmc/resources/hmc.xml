@@ -37,7 +37,6 @@
 				<tab name="tab.bonstore">
 					<section name="section.bonstore">
 						<listlayout>
-							<!-- <attribute name="id"/> -->
 							<attribute name="name"/>
 							<attribute name="phonenumber"/>
 							<attribute name="email"/>

@@ -9,7 +9,7 @@
  * Confidential Information and shall use it only in accordance with the 
  * terms of the license agreement you entered into with SAP Hybris.
  */
-package org.bonstorehmc.constants;
+package org.bonstore.hmc.constants;
 
 /**
  * Global class for all Bonstorehmc constants. You can add global constants for your extension into this class.

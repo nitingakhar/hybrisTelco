@@ -1,10 +1,10 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 9, 2016 3:48:21 PM                      ---
+ * --- Generated at Jun 10, 2016 1:47:33 PM                     ---
  * ----------------------------------------------------------------
  */
-package org.bonstorehmc.constants;
+package org.bonstore.hmc.constants;
 
 /**
  * @deprecated use constants in Model classes instead

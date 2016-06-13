@@ -20,16 +20,16 @@
 	<!--
 		Example Data POJO
 	
-	<bean class="org.bonstorehmc.data.AbstractPojo" abstract="true">
+	<bean class="org.bonstore.hmc.data.AbstractPojo" abstract="true">
 		<property name="id" type="String"/>
 		<property name="flag" type="boolean"/>
 	</bean>
 
-	<bean class="org.bonstorehmc.data.MyPojo" extends="org.bonstorehmc.data.AbstractPojo">
+	<bean class="org.bonstore.hmc.data.MyPojo" extends="org.bonstore.hmc.data.AbstractPojo">
 		<property name="message" type="String"/>
 	</bean>
 
-	<bean class="org.bonstorehmc.data.AnnotatedPojo">
+	<bean class="org.bonstore.hmc.data.AnnotatedPojo">
 
 		<import type="javax.xml.bind.annotation.XmlRootElement"/>
 		<import type="javax.xml.bind.annotation.XmlElements"/>
