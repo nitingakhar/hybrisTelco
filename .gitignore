@@ -12,6 +12,7 @@
 README
 *.bat
 
+*/gensrc/**
 *.class
 
 # Package Files #

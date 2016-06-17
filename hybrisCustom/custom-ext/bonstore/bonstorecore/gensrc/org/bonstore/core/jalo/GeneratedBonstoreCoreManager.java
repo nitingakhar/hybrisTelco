@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 10, 2016 1:47:33 PM                     ---
+ * --- Generated at Jun 15, 2016 12:15:45 PM                    ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.core.jalo;
@@ -18,7 +18,6 @@ import de.hybris.platform.jalo.type.JaloGenericCreationException;
 import de.hybris.platform.jalo.user.Customer;
 import de.hybris.platform.jalo.user.User;
 import de.hybris.platform.util.Utilities;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -276,7 +275,7 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 	 * <i>Generated method</i> - Getter of the <code>Customer.organizations</code> attribute.
 	 * @return the organizations
 	 */
-	public Collection<Organization> getOrganizations(final SessionContext ctx, final Customer item)
+	public List<Organization> getOrganizations(final SessionContext ctx, final Customer item)
 	{
 		final List<Organization> items = item.getLinkedItems( 
 			ctx,
@@ -284,8 +283,8 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			"Organization",
 			null,
-			false,
-			false
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true)
 		);
 		return items;
 	}
@@ -294,7 +293,7 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 	 * <i>Generated method</i> - Getter of the <code>Customer.organizations</code> attribute.
 	 * @return the organizations
 	 */
-	public Collection<Organization> getOrganizations(final Customer item)
+	public List<Organization> getOrganizations(final Customer item)
 	{
 		return getOrganizations( getSession().getSessionContext(), item );
 	}
@@ -319,7 +318,7 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 	 * <i>Generated method</i> - Setter of the <code>Customer.organizations</code> attribute. 
 	 * @param value the organizations
 	 */
-	public void setOrganizations(final SessionContext ctx, final Customer item, final Collection<Organization> value)
+	public void setOrganizations(final SessionContext ctx, final Customer item, final List<Organization> value)
 	{
 		item.setLinkedItems( 
 			ctx,
@@ -327,8 +326,8 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			value,
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
@@ -337,7 +336,7 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 	 * <i>Generated method</i> - Setter of the <code>Customer.organizations</code> attribute. 
 	 * @param value the organizations
 	 */
-	public void setOrganizations(final Customer item, final Collection<Organization> value)
+	public void setOrganizations(final Customer item, final List<Organization> value)
 	{
 		setOrganizations( getSession().getSessionContext(), item, value );
 	}
@@ -354,8 +353,8 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
@@ -381,8 +380,8 @@ public abstract class GeneratedBonstoreCoreManager extends Extension
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}

@@ -25,6 +25,9 @@
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-electronics-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-store-apparel-spring.xml"/>
 	<import resource="classpath:/bonstorecore/integration/hot-folder-common-spring.xml"/>
+	
+	<context:component-scan base-package="org.bonstore.core"/>
+	
 
 	<!-- SystemSetup for the BonstoreCore -->
 	<bean id="acceleratorCoreSystemSetup" class="org.bonstore.core.setup.CoreSystemSetup"
@@ -436,4 +439,12 @@
 		<property name="rootCategoryCode" value="categories"/>
 	</bean>
 	
+	<alias name="defaultOrgUserService" alias="orgUserService"/>
+    <bean id="defaultOrgUserService" class="org.bonstore.core.organization.impl.DefaultOrgUserService">
+    	<property name="usersDao" ref="usersDao"/>
+    </bean>
+    
+    <bean id="sendUsersListJob" class=" org.bonstore.core.jobs.SendUsersListJob" autowire="byName">
+	</bean>
+
 </beans>

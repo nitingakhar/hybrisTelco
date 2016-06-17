@@ -1,17 +1,19 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 10, 2016 1:47:33 PM                     ---
+ * --- Generated at Jun 15, 2016 12:15:45 PM                    ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.core.jalo;
 
 import de.hybris.platform.jalo.GenericItem;
 import de.hybris.platform.jalo.Item.AttributeMode;
+import de.hybris.platform.jalo.JaloInvalidParameterException;
 import de.hybris.platform.jalo.SessionContext;
+import de.hybris.platform.jalo.c2l.C2LManager;
+import de.hybris.platform.jalo.c2l.Language;
 import de.hybris.platform.jalo.user.Customer;
 import de.hybris.platform.util.Utilities;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +61,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Getter of the <code>Organization.customers</code> attribute.
 	 * @return the customers
 	 */
-	public Collection<Customer> getCustomers(final SessionContext ctx)
+	public List<Customer> getCustomers(final SessionContext ctx)
 	{
 		final List<Customer> items = getLinkedItems( 
 			ctx,
@@ -67,8 +69,8 @@ public abstract class GeneratedOrganization extends GenericItem
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			"Customer",
 			null,
-			false,
-			false
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true)
 		);
 		return items;
 	}
@@ -77,7 +79,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Getter of the <code>Organization.customers</code> attribute.
 	 * @return the customers
 	 */
-	public Collection<Customer> getCustomers()
+	public List<Customer> getCustomers()
 	{
 		return getCustomers( getSession().getSessionContext() );
 	}
@@ -102,7 +104,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Setter of the <code>Organization.customers</code> attribute. 
 	 * @param value the customers
 	 */
-	public void setCustomers(final SessionContext ctx, final Collection<Customer> value)
+	public void setCustomers(final SessionContext ctx, final List<Customer> value)
 	{
 		setLinkedItems( 
 			ctx,
@@ -110,8 +112,8 @@ public abstract class GeneratedOrganization extends GenericItem
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			value,
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
@@ -120,7 +122,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Setter of the <code>Organization.customers</code> attribute. 
 	 * @param value the customers
 	 */
-	public void setCustomers(final Collection<Customer> value)
+	public void setCustomers(final List<Customer> value)
 	{
 		setCustomers( getSession().getSessionContext(), value );
 	}
@@ -137,8 +139,8 @@ public abstract class GeneratedOrganization extends GenericItem
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
@@ -164,8 +166,8 @@ public abstract class GeneratedOrganization extends GenericItem
 			BonstoreCoreConstants.Relations.CUSTOMERORGANIZATIONRELATION,
 			null,
 			Collections.singletonList(value),
-			false,
-			false,
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_SRC_ORDERED, true),
+			Utilities.getRelationOrderingOverride(CUSTOMERORGANIZATIONRELATION_TGT_ORDERED, true),
 			Utilities.getMarkModifiedOverride(CUSTOMERORGANIZATIONRELATION_MARKMODIFIED)
 		);
 	}
@@ -294,7 +296,11 @@ public abstract class GeneratedOrganization extends GenericItem
 	 */
 	public String getName(final SessionContext ctx)
 	{
-		return (String)getProperty( ctx, NAME);
+		if( ctx == null || ctx.getLanguage() == null )
+		{
+			throw new JaloInvalidParameterException("GeneratedOrganization.getName requires a session language", 0 );
+		}
+		return (String)getLocalizedProperty( ctx, NAME);
 	}
 	
 	/**
@@ -307,12 +313,34 @@ public abstract class GeneratedOrganization extends GenericItem
 	}
 	
 	/**
+	 * <i>Generated method</i> - Getter of the <code>Organization.name</code> attribute. 
+	 * @return the localized name - name
+	 */
+	public Map<Language,String> getAllName(final SessionContext ctx)
+	{
+		return (Map<Language,String>)getAllLocalizedProperties(ctx,NAME,C2LManager.getInstance().getAllLanguages());
+	}
+	
+	/**
+	 * <i>Generated method</i> - Getter of the <code>Organization.name</code> attribute. 
+	 * @return the localized name - name
+	 */
+	public Map<Language,String> getAllName()
+	{
+		return getAllName( getSession().getSessionContext() );
+	}
+	
+	/**
 	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
 	 * @param value the name - name
 	 */
 	public void setName(final SessionContext ctx, final String value)
 	{
-		setProperty(ctx, NAME,value);
+		if( ctx == null || ctx.getLanguage() == null )
+		{
+			throw new JaloInvalidParameterException("GeneratedOrganization.setName requires a session language", 0 );
+		}
+		setLocalizedProperty(ctx, NAME,value);
 	}
 	
 	/**
@@ -325,47 +353,46 @@ public abstract class GeneratedOrganization extends GenericItem
 	}
 	
 	/**
-	 * <i>Generated method</i> - Getter of the <code>Organization.phonenumber</code> attribute.
-	 * @return the phonenumber - phonenumber
+	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
+	 * @param value the name - name
 	 */
-	public Integer getPhonenumber(final SessionContext ctx)
+	public void setAllName(final SessionContext ctx, final Map<Language,String> value)
 	{
-		return (Integer)getProperty( ctx, PHONENUMBER);
+		setAllLocalizedProperties(ctx,NAME,value);
+	}
+	
+	/**
+	 * <i>Generated method</i> - Setter of the <code>Organization.name</code> attribute. 
+	 * @param value the name - name
+	 */
+	public void setAllName(final Map<Language,String> value)
+	{
+		setAllName( getSession().getSessionContext(), value );
 	}
 	
 	/**
 	 * <i>Generated method</i> - Getter of the <code>Organization.phonenumber</code> attribute.
 	 * @return the phonenumber - phonenumber
 	 */
-	public Integer getPhonenumber()
+	public String getPhonenumber(final SessionContext ctx)
+	{
+		return (String)getProperty( ctx, PHONENUMBER);
+	}
+	
+	/**
+	 * <i>Generated method</i> - Getter of the <code>Organization.phonenumber</code> attribute.
+	 * @return the phonenumber - phonenumber
+	 */
+	public String getPhonenumber()
 	{
 		return getPhonenumber( getSession().getSessionContext() );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Getter of the <code>Organization.phonenumber</code> attribute. 
-	 * @return the phonenumber - phonenumber
-	 */
-	public int getPhonenumberAsPrimitive(final SessionContext ctx)
-	{
-		Integer value = getPhonenumber( ctx );
-		return value != null ? value.intValue() : 0;
-	}
-	
-	/**
-	 * <i>Generated method</i> - Getter of the <code>Organization.phonenumber</code> attribute. 
-	 * @return the phonenumber - phonenumber
-	 */
-	public int getPhonenumberAsPrimitive()
-	{
-		return getPhonenumberAsPrimitive( getSession().getSessionContext() );
 	}
 	
 	/**
 	 * <i>Generated method</i> - Setter of the <code>Organization.phonenumber</code> attribute. 
 	 * @param value the phonenumber - phonenumber
 	 */
-	public void setPhonenumber(final SessionContext ctx, final Integer value)
+	public void setPhonenumber(final SessionContext ctx, final String value)
 	{
 		setProperty(ctx, PHONENUMBER,value);
 	}
@@ -374,25 +401,7 @@ public abstract class GeneratedOrganization extends GenericItem
 	 * <i>Generated method</i> - Setter of the <code>Organization.phonenumber</code> attribute. 
 	 * @param value the phonenumber - phonenumber
 	 */
-	public void setPhonenumber(final Integer value)
-	{
-		setPhonenumber( getSession().getSessionContext(), value );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>Organization.phonenumber</code> attribute. 
-	 * @param value the phonenumber - phonenumber
-	 */
-	public void setPhonenumber(final SessionContext ctx, final int value)
-	{
-		setPhonenumber( ctx,Integer.valueOf( value ) );
-	}
-	
-	/**
-	 * <i>Generated method</i> - Setter of the <code>Organization.phonenumber</code> attribute. 
-	 * @param value the phonenumber - phonenumber
-	 */
-	public void setPhonenumber(final int value)
+	public void setPhonenumber(final String value)
 	{
 		setPhonenumber( getSession().getSessionContext(), value );
 	}
