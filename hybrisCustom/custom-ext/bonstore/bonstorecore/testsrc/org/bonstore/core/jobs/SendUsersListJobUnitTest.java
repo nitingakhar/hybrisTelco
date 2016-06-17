@@ -44,40 +44,26 @@ public class SendUsersListJobUnitTest
 
 	@Mock
 	private DefaultOrgUserService defaultOrgUserService;
+	@Mock
+	private EmailService emailService;
+	@Mock
+	private ModelService modelService;
 
 	private OrganizationModel organizationModel;
 	private CustomerModel customerModel;
 	private List<CustomerModel> customerModelList;
 	private List<OrganizationModel> organizationModelList;
-	/*
-	 * @Mock private I18NService i18NService;
-	 */
 	private CronJobModel cronJobModel;
-
 	private EmailMessageModel emailMessageModel;
-
 	private List<EmailAddressModel> emailAddressModelList;
-
 	private SendUsersListJob sendUsersListJob;
-
-	@Mock
-	private EmailService emailService;
-
 	private Locale loc;
-
-
-	@Mock
-	private ModelService modelService;
-
-
 	private EmailAddressModel emailAddressModel;
 
 
 	@Before
 	public void setup()
 	{
-		//defaultOrgUserService = new DefaultOrgUserService();
-
 		Registry.activateMasterTenant();
 
 		loc = new Locale("en");
@@ -96,7 +82,6 @@ public class SendUsersListJobUnitTest
 
 		organizationModel.setId(1);
 		organizationModel.setName("TestName", loc);
-		//organizationModel.setName("TestName");
 		organizationModel.setPhonenumber("180018001234");
 		organizationModel.setEmail("testadmin@bonstore.com");
 		organizationModel.setCustomers(customerModelList);
@@ -104,7 +89,6 @@ public class SendUsersListJobUnitTest
 		cronJobModel = new CronJobModel();
 
 		emailAddressModel = new EmailAddressModel();
-		//emailAddressModel = mock(EmailAddressModel.class);
 		emailAddressModel.setEmailAddress("testuser@gmail.com");
 		emailAddressModel.setDisplayName("Bonstore Admin testOrg");
 
@@ -112,9 +96,7 @@ public class SendUsersListJobUnitTest
 		emailMessageModel.setBody("List of users in your organization :-" + "\n" + "Donald Trump");
 		emailMessageModel.setCreationtime(new Date());
 		emailMessageModel.setSubject("Users List subject");
-
 		emailMessageModel.setReplyToAddress(Config.getParameter("mail.replyto"));
-
 		emailAddressModelList.add(emailAddressModel);
 		emailMessageModel.setToAddresses(emailAddressModelList);
 		emailMessageModel.setFromAddress(emailAddressModel);
@@ -133,11 +115,9 @@ public class SendUsersListJobUnitTest
 	{
 		final List<OrganizationModel> organizationModels = organizationModelList;
 		when(defaultOrgUserService.getOrganizations()).thenReturn(organizationModels);
-		//final OngoingStubbing<Boolean> thenReturn = when(emailService.send(emailMessageModel)).thenReturn(true);
 		when(emailService.send(emailMessageModel)).thenReturn(true);
 		when((EmailMessageModel) modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
 		when((EmailAddressModel) modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
-		//given(i18NService.getCurrentLocale()).willReturn(loc);
 		final PerformResult result = sendUsersListJob.perform(cronJobModel);
 		assertEquals("", CronJobResult.SUCCESS, result.getResult());
 		assertEquals("", CronJobStatus.FINISHED, result.getStatus());

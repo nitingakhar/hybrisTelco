@@ -88,7 +88,6 @@ public class SendUsersListJob extends AbstractJobPerformable<CronJobModel>
 		{
 			return NO_USERS;
 		}
-
 		final StringBuilder sBuilder = new StringBuilder();
 		for (final CustomerModel customerModel : customersList)
 		{
