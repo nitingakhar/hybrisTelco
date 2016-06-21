@@ -10,18 +10,17 @@ import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorservices.email.EmailService;
 import de.hybris.platform.acceleratorservices.model.email.EmailAddressModel;
 import de.hybris.platform.acceleratorservices.model.email.EmailMessageModel;
-import de.hybris.platform.core.Registry;
+import de.hybris.platform.core.model.c2l.LanguageModel;
 import de.hybris.platform.core.model.user.CustomerModel;
 import de.hybris.platform.cronjob.enums.CronJobResult;
 import de.hybris.platform.cronjob.enums.CronJobStatus;
 import de.hybris.platform.cronjob.model.CronJobModel;
 import de.hybris.platform.servicelayer.cronjob.PerformResult;
+import de.hybris.platform.servicelayer.dto.converter.Converter;
+import de.hybris.platform.servicelayer.i18n.CommonI18NService;
 import de.hybris.platform.servicelayer.model.ModelService;
-import de.hybris.platform.util.Config;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import org.bonstore.core.model.OrganizationModel;
@@ -48,79 +47,83 @@ public class SendUsersListJobUnitTest
 	private EmailService emailService;
 	@Mock
 	private ModelService modelService;
-
+	@Mock
+	private CommonI18NService commonI18NService;
+	@Mock
 	private OrganizationModel organizationModel;
+	@Mock
 	private CustomerModel customerModel;
-	private List<CustomerModel> customerModelList;
-	private List<OrganizationModel> organizationModelList;
+	@Mock
+	private LanguageModel languageModel;
+	@Mock
 	private CronJobModel cronJobModel;
+	@Mock
 	private EmailMessageModel emailMessageModel;
-	private List<EmailAddressModel> emailAddressModelList;
+	@Mock
+	private EmailAddressModel emailAddressModel;
+	@Mock
+	private Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
+
 	private SendUsersListJob sendUsersListJob;
 	private Locale loc;
-	private EmailAddressModel emailAddressModel;
+
 
 
 	@Before
 	public void setup()
 	{
-		Registry.activateMasterTenant();
-
 		loc = new Locale("en");
-		customerModel = new CustomerModel();
-		customerModelList = new ArrayList<CustomerModel>();
-		organizationModel = new OrganizationModel();
-		organizationModelList = new ArrayList<OrganizationModel>();
-		emailAddressModelList = new ArrayList<EmailAddressModel>();
-
-		customerModel.setCustomerID("CustID1");
-		customerModel.setName("TestCustomer1");
-		customerModel.setCreationtime(new Date());
-		customerModel.setStatus(false);
-		customerModel.setAttemptCount(0);
-		customerModelList.add(customerModel);
-
-		organizationModel.setId(1);
-		organizationModel.setName("TestName", loc);
-		organizationModel.setPhonenumber("180018001234");
-		organizationModel.setEmail("testadmin@bonstore.com");
-		organizationModel.setCustomers(customerModelList);
-		organizationModelList.add(organizationModel);
-		cronJobModel = new CronJobModel();
-
-		emailAddressModel = new EmailAddressModel();
-		emailAddressModel.setEmailAddress("testuser@gmail.com");
-		emailAddressModel.setDisplayName("Bonstore Admin testOrg");
-
-		emailMessageModel = new EmailMessageModel();
-		emailMessageModel.setBody("List of users in your organization :-" + "\n" + "Donald Trump");
-		emailMessageModel.setCreationtime(new Date());
-		emailMessageModel.setSubject("Users List subject");
-		emailMessageModel.setReplyToAddress(Config.getParameter("mail.replyto"));
-		emailAddressModelList.add(emailAddressModel);
-		emailMessageModel.setToAddresses(emailAddressModelList);
-		emailMessageModel.setFromAddress(emailAddressModel);
-
 		sendUsersListJob = new SendUsersListJob();
+
+		when(cronJobModel.getSessionLanguage()).thenReturn(languageModel);
+		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(loc);
+		when(modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
+		when(modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
+		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
+
 		sendUsersListJob.setDefaultOrgUserService(defaultOrgUserService);
 		sendUsersListJob.setEmailService(emailService);
 		sendUsersListJob.setModelService(modelService);
+		sendUsersListJob.setCommonI18NService(commonI18NService);
+		sendUsersListJob.setEmailMessageModelConverter(emailMessageModelConverter);
+	}
 
+	@Test
+	public void testResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsEmpty()
+	{
+		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
+		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
+		final PerformResult result = sendUsersListJob.perform(cronJobModel);
+		assertEquals(CronJobResult.SUCCESS, result.getResult());
+		assertEquals(CronJobStatus.FINISHED, result.getStatus());
+	}
+
+	@Test
+	public void testReturnResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsNotEmptyAndCustomersListIsEmpty()
+	{
+		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
+		orgList.add(organizationModel);
+		final ArrayList<CustomerModel> custList = new ArrayList<CustomerModel>();
+		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
+		when(organizationModel.getCustomers()).thenReturn(custList);
+		final PerformResult result = sendUsersListJob.perform(cronJobModel);
+		assertEquals(CronJobResult.SUCCESS, result.getResult());
+		assertEquals(CronJobStatus.FINISHED, result.getStatus());
 
 	}
 
 	@Test
-	public void testPerformEmailJob()
-
+	public void testReturnResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsNotEmptyAndCustomersListIsNotEmpty()
 	{
-		final List<OrganizationModel> organizationModels = organizationModelList;
-		when(defaultOrgUserService.getOrganizations()).thenReturn(organizationModels);
-		when(emailService.send(emailMessageModel)).thenReturn(true);
-		when((EmailMessageModel) modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
-		when((EmailAddressModel) modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
+		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
+		orgList.add(organizationModel);
+		final ArrayList<CustomerModel> custList = new ArrayList<CustomerModel>();
+		custList.add(customerModel);
+		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
+		when(organizationModel.getCustomers()).thenReturn(custList);
 		final PerformResult result = sendUsersListJob.perform(cronJobModel);
-		assertEquals("", CronJobResult.SUCCESS, result.getResult());
-		assertEquals("", CronJobStatus.FINISHED, result.getStatus());
+		assertEquals(CronJobResult.SUCCESS, result.getResult());
+		assertEquals(CronJobStatus.FINISHED, result.getStatus());
 
 	}
 }

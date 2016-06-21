@@ -4,24 +4,22 @@
 package org.bonstore.core.jobs;
 
 import de.hybris.platform.acceleratorservices.email.EmailService;
-import de.hybris.platform.acceleratorservices.model.email.EmailAddressModel;
 import de.hybris.platform.acceleratorservices.model.email.EmailMessageModel;
-import de.hybris.platform.core.model.user.CustomerModel;
+import de.hybris.platform.core.model.c2l.LanguageModel;
 import de.hybris.platform.cronjob.enums.CronJobResult;
 import de.hybris.platform.cronjob.enums.CronJobStatus;
 import de.hybris.platform.cronjob.model.CronJobModel;
 import de.hybris.platform.servicelayer.cronjob.AbstractJobPerformable;
 import de.hybris.platform.servicelayer.cronjob.PerformResult;
-import de.hybris.platform.util.Config;
+import de.hybris.platform.servicelayer.dto.converter.Converter;
+import de.hybris.platform.servicelayer.i18n.CommonI18NService;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.apache.log4j.Logger;
 import org.bonstore.core.model.OrganizationModel;
 import org.bonstore.core.organization.impl.DefaultOrgUserService;
+import org.springframework.beans.factory.annotation.Required;
 
 
 /**
@@ -32,18 +30,17 @@ public class SendUsersListJob extends AbstractJobPerformable<CronJobModel>
 {
 
 	private static final Logger LOG = Logger.getLogger(SendUsersListJob.class);
-	private static final String NO_USERS = "No users in the organization";
-	private static final String NUM_USERS = "List of users in your organization :-";
-	private static final String DISPLAY_NAME = "BonStore Admin ";
 	private static final String USER_LIST = "Users list in ";
 
 	private EmailService emailService;
 	private DefaultOrgUserService defaultOrgUserService;
-
+	private CommonI18NService commonI18NService;
+	private Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
 
 	@Override
 	public PerformResult perform(final CronJobModel cronJob)
 	{
+		final LanguageModel languageModel = cronJob.getSessionLanguage();
 		LOG.info("Sending list of users in organization to all admins");
 
 		final List<OrganizationModel> orgList = defaultOrgUserService.getOrganizations();
@@ -56,8 +53,10 @@ public class SendUsersListJob extends AbstractJobPerformable<CronJobModel>
 
 		for (final OrganizationModel organizationModel : orgList)
 		{
-			final List<CustomerModel> customersList = organizationModel.getCustomers();
-			emailService.send(setMessageModel(customersList, organizationModel));
+			final EmailMessageModel emailMessageModel = emailMessageModelConverter.convert(organizationModel);
+			emailMessageModel
+					.setSubject(USER_LIST + organizationModel.getName(commonI18NService.getLocaleForLanguage(languageModel)));
+			emailService.send(emailMessageModel);
 		}
 
 		return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
@@ -75,54 +74,21 @@ public class SendUsersListJob extends AbstractJobPerformable<CronJobModel>
 		this.defaultOrgUserService = defaultOrgUserService;
 	}
 
-
-	/**
-	 * Utility method which returns the mail body with the list of customer's name
-	 *
-	 * @param customersList
-	 * @return mail body in the form of list of customers.
-	 */
-	private String getMailBody(final List<CustomerModel> customersList)
+	public void setCommonI18NService(final CommonI18NService commonI18NService)
 	{
-		if (customersList.isEmpty())
-		{
-			return NO_USERS;
-		}
-		final StringBuilder sBuilder = new StringBuilder();
-		for (final CustomerModel customerModel : customersList)
-		{
-			sBuilder.append("<br>");
-			sBuilder.append(customerModel.getName() + "<br>");
-		}
-		return NUM_USERS + "<br>" + sBuilder.toString();
+		this.commonI18NService = commonI18NService;
 	}
 
-	/**
-	 * Utility method which sets Email message model with all details like body, creation time, subject, display name,
-	 * address details etc
-	 *
-	 * @param customersList
-	 * @param organizationModel
-	 * @return EmailMessageModel
-	 */
-	private EmailMessageModel setMessageModel(final List<CustomerModel> customersList, final OrganizationModel organizationModel)
+
+	protected Converter<OrganizationModel, EmailMessageModel> getEmailMessageModelConverter()
 	{
-
-		final EmailMessageModel emailMessageModel = (EmailMessageModel) modelService.create(EmailMessageModel.class);
-		emailMessageModel.setBody(getMailBody(customersList));
-		emailMessageModel.setCreationtime(new Date());
-		emailMessageModel.setSubject(USER_LIST + organizationModel.getName(Locale.getDefault()));
-		emailMessageModel.setReplyToAddress(Config.getParameter("mail.replyto"));
-
-		final EmailAddressModel emailAddressModel = (EmailAddressModel) modelService.create(EmailAddressModel.class);
-		emailAddressModel.setEmailAddress(organizationModel.getEmail());
-		emailAddressModel.setDisplayName(DISPLAY_NAME + organizationModel.getId());
-		final List<EmailAddressModel> emailAddressModelList = new ArrayList<EmailAddressModel>();
-		emailAddressModelList.add(emailAddressModel);
-
-		emailMessageModel.setToAddresses(emailAddressModelList);
-		emailMessageModel.setFromAddress(emailAddressModel);
-
-		return emailMessageModel;
+		return emailMessageModelConverter;
 	}
+
+	@Required
+	public void setEmailMessageModelConverter(final Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter)
+	{
+		this.emailMessageModelConverter = emailMessageModelConverter;
+	}
+
 }

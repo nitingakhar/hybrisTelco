@@ -444,7 +444,23 @@
     	<property name="usersDao" ref="usersDao"/>
     </bean>
     
-    <bean id="sendUsersListJob" class=" org.bonstore.core.jobs.SendUsersListJob" autowire="byName">
+    <bean id="sendUsersListJob" class=" org.bonstore.core.jobs.SendUsersListJob" autowire="byName"/>
+	
+	<alias name="defaultEmailMessageModelConverter" alias="emailMessageModelConverter"/>
+	<bean id="defaultEmailMessageModelConverter" parent="abstractPopulatingConverter">
+		<property name="targetClass" value="de.hybris.platform.acceleratorservices.model.email.EmailMessageModel"/>
+		<property name="populators">
+			<list>
+				<ref bean="emailMessageModelPopulator"/>
+			</list>
+		</property>
 	</bean>
+
+	<alias name="defaultEmailMessageModelPopulator" alias="emailMessageModelPopulator"/>
+	<bean id="defaultEmailMessageModelPopulator"
+			class="org.bonstore.core.organization.populator.EmailMessageModelPopulator">
+			<property name="replyToAddress" value="${mail.replyto}"/>
+			<property name="modelService" ref="modelService"/>
+			</bean>
 
 </beans>
