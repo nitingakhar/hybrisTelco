@@ -28,6 +28,7 @@ import org.bonstore.core.organization.impl.DefaultOrgUserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -63,7 +64,7 @@ public class SendUsersListJobUnitTest
 	private EmailAddressModel emailAddressModel;
 	@Mock
 	private Converter<OrganizationModel, EmailMessageModel> emailMessageModelConverter;
-
+	@InjectMocks
 	private SendUsersListJob sendUsersListJob;
 	private Locale loc;
 
@@ -73,19 +74,13 @@ public class SendUsersListJobUnitTest
 	public void setup()
 	{
 		loc = new Locale("en");
-		sendUsersListJob = new SendUsersListJob();
 
 		when(cronJobModel.getSessionLanguage()).thenReturn(languageModel);
 		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(loc);
-		when(modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
-		when(modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
-		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
+		//when(modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
+		//	when(modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
 
-		sendUsersListJob.setDefaultOrgUserService(defaultOrgUserService);
-		sendUsersListJob.setEmailService(emailService);
-		sendUsersListJob.setModelService(modelService);
-		sendUsersListJob.setCommonI18NService(commonI18NService);
-		sendUsersListJob.setEmailMessageModelConverter(emailMessageModelConverter);
+
 	}
 
 	@Test
@@ -106,6 +101,7 @@ public class SendUsersListJobUnitTest
 		final ArrayList<CustomerModel> custList = new ArrayList<CustomerModel>();
 		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
 		when(organizationModel.getCustomers()).thenReturn(custList);
+		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
 		final PerformResult result = sendUsersListJob.perform(cronJobModel);
 		assertEquals(CronJobResult.SUCCESS, result.getResult());
 		assertEquals(CronJobStatus.FINISHED, result.getStatus());
@@ -121,6 +117,7 @@ public class SendUsersListJobUnitTest
 		custList.add(customerModel);
 		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
 		when(organizationModel.getCustomers()).thenReturn(custList);
+		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
 		final PerformResult result = sendUsersListJob.perform(cronJobModel);
 		assertEquals(CronJobResult.SUCCESS, result.getResult());
 		assertEquals(CronJobStatus.FINISHED, result.getStatus());

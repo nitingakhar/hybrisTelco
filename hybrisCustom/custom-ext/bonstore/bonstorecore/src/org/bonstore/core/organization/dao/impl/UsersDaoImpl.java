@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
 import org.bonstore.core.organization.dao.UsersDao;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,14 +23,10 @@ import org.springframework.stereotype.Component;
 public class UsersDaoImpl implements UsersDao
 {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.bonstore.core.suggestion.dao.UsersDao#getOrganizations()
-	 */
-
 	@Autowired
 	private FlexibleSearchService flexibleSearchService;
+	@Mock
+	private OrganizationModel organizationModel;
 
 	@Override
 	public List<OrganizationModel> getOrganizations()

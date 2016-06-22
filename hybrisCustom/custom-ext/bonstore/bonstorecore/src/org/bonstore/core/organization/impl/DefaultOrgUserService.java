@@ -31,11 +31,6 @@ public class DefaultOrgUserService implements OrgUserService
 
 	private UsersDao usersDao;
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.bonstore.core.organization.OrgUserService#getOrganizations()
-	 */
 	@Override
 	public List<OrganizationModel> getOrganizations()
 	{

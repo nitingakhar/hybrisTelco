@@ -41,26 +41,27 @@ public class SendUsersListJob extends AbstractJobPerformable<CronJobModel>
 	public PerformResult perform(final CronJobModel cronJob)
 	{
 		final LanguageModel languageModel = cronJob.getSessionLanguage();
+		PerformResult performResult = new PerformResult(CronJobResult.FAILURE, CronJobStatus.ABORTED);
 		LOG.info("Sending list of users in organization to all admins");
-
 		final List<OrganizationModel> orgList = defaultOrgUserService.getOrganizations();
-
 		if (orgList.isEmpty())
 		{
 			LOG.info("There are no organizations in the system");
-			return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
+			performResult = new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
 		}
-
-		for (final OrganizationModel organizationModel : orgList)
+		else
 		{
-			final EmailMessageModel emailMessageModel = emailMessageModelConverter.convert(organizationModel);
-			emailMessageModel
-					.setSubject(USER_LIST + organizationModel.getName(commonI18NService.getLocaleForLanguage(languageModel)));
-			emailService.send(emailMessageModel);
+			for (final OrganizationModel organizationModel : orgList)
+			{
+				final EmailMessageModel emailMessageModel = emailMessageModelConverter.convert(organizationModel);
+				emailMessageModel
+						.setSubject(USER_LIST + organizationModel.getName(commonI18NService.getLocaleForLanguage(languageModel)));
+				emailService.send(emailMessageModel);
+
+			}
+			performResult = new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
 		}
-
-		return new PerformResult(CronJobResult.SUCCESS, CronJobStatus.FINISHED);
-
+		return performResult;
 	}
 
 	public void setEmailService(final EmailService emailService)

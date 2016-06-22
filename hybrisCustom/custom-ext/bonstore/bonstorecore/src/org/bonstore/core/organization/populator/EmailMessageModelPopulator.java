@@ -34,12 +34,9 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 	@Override
 	public void populate(final OrganizationModel source, final EmailMessageModel target) throws ConversionException
 	{
-		if (source == null)
-		{
-			return;
-		}
-
+		validateParameterNotNull(source, "Parameter [OrganizationModel] target cannot be null");
 		validateParameterNotNull(target, "Parameter [EmailMessageModel] target cannot be null");
+
 		target.setCreationtime(new Date());
 		target.setBody(getMailBody(source.getCustomers()));
 		target.setReplyToAddress(replyToAddress);
@@ -66,11 +63,17 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 			return NO_USERS;
 		}
 		final StringBuilder sBuilder = new StringBuilder();
-		for (final CustomerModel customerModel : customersList)
-		{
+
+		final List<CustomerModel> customerModelList = customersList;
+		customerModelList.stream().forEach((customerModel) -> {
 			sBuilder.append("<br>");
 			sBuilder.append(customerModel.getName() + "<br>");
-		}
+		});
+
+		/*
+		 * for (final CustomerModel customerModel : customersList) { sBuilder.append("<br>");
+		 * sBuilder.append(customerModel.getName() + "<br>"); }
+		 */
 		return NUM_USERS + "<br>" + sBuilder.toString();
 	}
 

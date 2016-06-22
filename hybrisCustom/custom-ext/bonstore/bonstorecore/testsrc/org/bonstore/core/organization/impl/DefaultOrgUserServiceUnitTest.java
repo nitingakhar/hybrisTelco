@@ -10,16 +10,14 @@ import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.core.model.user.CustomerModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 import org.bonstore.core.model.OrganizationModel;
 import org.bonstore.core.organization.dao.UsersDao;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -33,73 +31,54 @@ import org.mockito.runners.MockitoJUnitRunner;
 public class DefaultOrgUserServiceUnitTest
 {
 
+	@InjectMocks
 	private DefaultOrgUserService defaultOrgUserService;
-
 	@Mock
 	private UsersDao usersDao;
-
+	@Mock
 	private OrganizationModel organizationModel;
-	private CustomerModel customerModel1;
-	private CustomerModel customerModel2;
+	@Mock
+	private CustomerModel firstCustomerModel;
+	@Mock
+	private CustomerModel secondCustomerModel;
 
-	private List<CustomerModel> customerModelList;
+	List<OrganizationModel> organizationModels;
+	List<CustomerModel> customerModels;
+
 
 	@Before
 	public void setUp()
 	{
-		defaultOrgUserService = new DefaultOrgUserService();
-		defaultOrgUserService.setUsersDao(usersDao);
-
-		organizationModel = new OrganizationModel();
-		organizationModel.setId(1);
-		organizationModel.setName("TestName", new Locale("en"));
-		organizationModel.setPhonenumber("180018001234");
-		organizationModel.setEmail("testadmin@bonstore.com");
-
-		customerModel1 = new CustomerModel();
-		customerModel2 = new CustomerModel();
-		organizationModel.setCustomers(getCustomerModelList());
-	}
-
-	/**
-	 * Utility method for getting customer models list
-	 *
-	 * @return List<CustomerModel>
-	 */
-	private List<CustomerModel> getCustomerModelList()
-	{
-		customerModel1.setCustomerID("CustID1");
-		customerModel1.setName("TestCustomer1");
-		customerModel1.setCreationtime(new Date());
-		customerModel1.setStatus(false);
-		customerModel1.setAttemptCount(0);
-
-		customerModel2.setCustomerID("CustID2");
-		customerModel2.setName("TestCustomer2");
-		customerModel2.setCreationtime(new Date());
-		customerModel2.setStatus(false);
-		customerModel2.setAttemptCount(0);
-
-		customerModelList = new ArrayList<CustomerModel>();
-		customerModelList.add(customerModel1);
-		customerModelList.add(customerModel2);
-		return customerModelList;
+		organizationModels = new ArrayList<OrganizationModel>();
+		customerModels = new ArrayList<CustomerModel>();
 	}
 
 	@Test
-	public void testGetOrganizations()
+	public void testGetOrganizationsListIsEmpty()
 	{
-		final List<OrganizationModel> organizationModels = Arrays.asList(organizationModel);
 		when(usersDao.getOrganizations()).thenReturn(organizationModels);
 		final List<OrganizationModel> orgsList = defaultOrgUserService.getOrganizations();
-		assertEquals("Number of organizations should be 1", 1, orgsList.size());
+		assertEquals("Number of organizations should be 0", 0, orgsList.size());
 	}
 
 	@Test
-	public void testCustomersList()
+	public void testGetOrganizationsListWhenCustomerListIsEmpty()
 	{
-		final List<OrganizationModel> organizationModels = Arrays.asList(organizationModel);
+		organizationModels.add(organizationModel);
 		when(usersDao.getOrganizations()).thenReturn(organizationModels);
+		final List<OrganizationModel> organizationModelsList = defaultOrgUserService.getOrganizations();
+		assertEquals("Number of organizations should be 0", 0, organizationModelsList.get(0).getCustomers().size());
+	}
+
+	@Test
+	public void testCustomersListWhenCustomerListIsNotEmpty()
+	{
+		customerModels.add(firstCustomerModel);
+		customerModels.add(secondCustomerModel);
+		organizationModel.setCustomers(customerModels);
+		organizationModels.add(organizationModel);
+		when(usersDao.getOrganizations()).thenReturn(organizationModels);
+		when(usersDao.getOrganizations().get(0).getCustomers()).thenReturn(customerModels);
 		final List<OrganizationModel> orgsList = defaultOrgUserService.getOrganizations();
 		assertEquals("Number of customers should be 2", 2, orgsList.get(0).getCustomers().size());
 	}
