@@ -11,6 +11,7 @@
 /workspace
 README
 *.bat
+**/import
 
 */gensrc/**
 *.class
