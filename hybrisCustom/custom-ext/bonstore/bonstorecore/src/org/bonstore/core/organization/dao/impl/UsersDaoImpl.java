@@ -3,30 +3,27 @@
  */
 package org.bonstore.core.organization.dao.impl;
 
-import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
+import de.hybris.platform.servicelayer.search.SearchResult;
 
 import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
 import org.bonstore.core.organization.dao.UsersDao;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 
 /**
  * @author Nitin_Gakhar
  *
  */
-@Component(value = "usersDao")
+//@Component(value = "usersDao")
 public class UsersDaoImpl implements UsersDao
 {
 
 	@Autowired
 	private FlexibleSearchService flexibleSearchService;
-	@Mock
-	private OrganizationModel organizationModel;
+	private SearchResult<OrganizationModel> searchResult;
 
 	@Override
 	public List<OrganizationModel> getOrganizations()
@@ -34,9 +31,8 @@ public class UsersDaoImpl implements UsersDao
 		// Build a query for the flexible search.
 		final String queryString = //
 				"SELECT {o:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE + " AS o}";
-		final FlexibleSearchQuery query = new FlexibleSearchQuery(queryString);
-		return flexibleSearchService.<OrganizationModel> search(query).getResult();
-
+		searchResult = flexibleSearchService.search(queryString);
+		return searchResult.getResult();
 	}
 
 }

@@ -67,26 +67,23 @@ public class SendUsersListJobUnitTest
 	@InjectMocks
 	private SendUsersListJob sendUsersListJob;
 	private Locale loc;
-
-
+	private ArrayList<OrganizationModel> orgList;
+	private ArrayList<CustomerModel> custList;
 
 	@Before
 	public void setup()
 	{
 		loc = new Locale("en");
-
+		orgList = new ArrayList<OrganizationModel>();
+		custList = new ArrayList<CustomerModel>();
 		when(cronJobModel.getSessionLanguage()).thenReturn(languageModel);
 		when(commonI18NService.getLocaleForLanguage(languageModel)).thenReturn(loc);
-		//when(modelService.create(EmailMessageModel.class)).thenReturn(emailMessageModel);
-		//	when(modelService.create(EmailAddressModel.class)).thenReturn(emailAddressModel);
-
 
 	}
 
 	@Test
 	public void testResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsEmpty()
 	{
-		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
 		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
 		final PerformResult result = sendUsersListJob.perform(cronJobModel);
 		assertEquals(CronJobResult.SUCCESS, result.getResult());
@@ -96,9 +93,7 @@ public class SendUsersListJobUnitTest
 	@Test
 	public void testReturnResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsNotEmptyAndCustomersListIsEmpty()
 	{
-		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
 		orgList.add(organizationModel);
-		final ArrayList<CustomerModel> custList = new ArrayList<CustomerModel>();
 		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
 		when(organizationModel.getCustomers()).thenReturn(custList);
 		when(emailMessageModelConverter.convert(organizationModel)).thenReturn(emailMessageModel);
@@ -111,9 +106,7 @@ public class SendUsersListJobUnitTest
 	@Test
 	public void testReturnResultAsSuccessAndJobStatusAsFinishedWhenOrgListIsNotEmptyAndCustomersListIsNotEmpty()
 	{
-		final ArrayList<OrganizationModel> orgList = new ArrayList<OrganizationModel>();
 		orgList.add(organizationModel);
-		final ArrayList<CustomerModel> custList = new ArrayList<CustomerModel>();
 		custList.add(customerModel);
 		when(defaultOrgUserService.getOrganizations()).thenReturn(orgList);
 		when(organizationModel.getCustomers()).thenReturn(custList);
