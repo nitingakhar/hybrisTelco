@@ -44,9 +44,7 @@ public class UsersDaoImplUnitTest
 	@Test
 	public void testGetOrganizationList()
 	{
-
-		final String queryString = //
-				"SELECT {o:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE + " AS o}";
+		final String queryString = "SELECT {o:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE + " AS o}";
 		final List<OrganizationModel> models = Arrays.asList(organizationModel);
 		when(flexibleSearchService.search(queryString)).thenReturn(searchResultObject);
 		when(searchResultObject.getResult()).thenReturn(Arrays.asList(organizationModel));

@@ -179,6 +179,7 @@
 	<bean id="loginGuidAuthenticationSuccessHandler" class="org.bonstore.storefront.security.GUIDAuthenticationSuccessHandler" >
 		<property name="authenticationSuccessHandler" ref="loginAuthenticationSuccessHandler" />
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
+		<property name="bonStoreLoginSuccessHandler" ref="bonStoreLoginSuccessHandler"/>
 	</bean>
 
 	<bean id="loginAuthenticationSuccessHandler" class="de.hybris.platform.acceleratorstorefrontcommons.security.StorefrontAuthenticationSuccessHandler" >
@@ -243,6 +244,7 @@
 
 	<bean id="loginAuthenticationFailureHandler" class="org.bonstore.storefront.security.LoginAuthenticationFailureHandler" >
         <property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+        <property name="bonStoreLoginFailureCounter" ref="bonStoreLoginFailureCounter"/>
 		<property name="defaultFailureUrl" value="/login?error=true"/>
 	</bean>
 
@@ -291,6 +293,19 @@
 
 	<bean id="rememberMeAuthenticationProvider" class="org.springframework.security.authentication.RememberMeAuthenticationProvider" >
 		<property name="key" value="bonstorestorefront"/>
+	</bean>
+	
+	<bean id="bonStoreLoginFailureCounter" class="org.bonstore.storefront.security.BonStoreLoginFailureCounter">
+		<property name="modelService" ref="modelService"/>
+		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter"/>
+		<property name="userService" ref="userService"/>
+		<property name="userDetailsService" ref="originalUidUserDetailsService"/>
+	</bean>
+	<bean id="bonStoreLoginSuccessHandler" class="org.bonstore.storefront.security.BonStoreLoginSuccessHandler">
+		<property name="modelService" ref="modelService"/>
+		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter"/>
+		<property name="userService" ref="userService"/>
+		<property name="userDetailsService" ref="originalUidUserDetailsService"/>
 	</bean>
 
 </beans>

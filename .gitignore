@@ -13,7 +13,7 @@ README
 *.bat
 **/import
 
-*/gensrc/**
+**/gensrc
 *.class
 
 # Package Files #

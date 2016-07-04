@@ -17,13 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
  * @author Nitin_Gakhar
  *
  */
-//@Component(value = "usersDao")
 public class UsersDaoImpl implements UsersDao
 {
 
 	@Autowired
 	private FlexibleSearchService flexibleSearchService;
-	private SearchResult<OrganizationModel> searchResult;
 
 	@Override
 	public List<OrganizationModel> getOrganizations()
@@ -31,7 +29,7 @@ public class UsersDaoImpl implements UsersDao
 		// Build a query for the flexible search.
 		final String queryString = //
 				"SELECT {o:" + OrganizationModel.PK + "} " + "FROM {" + OrganizationModel._TYPECODE + " AS o}";
-		searchResult = flexibleSearchService.search(queryString);
+		final SearchResult<OrganizationModel> searchResult = flexibleSearchService.search(queryString);
 		return searchResult.getResult();
 	}
 

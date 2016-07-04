@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.security;
 
@@ -33,11 +33,32 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 {
 	private GUIDCookieStrategy guidCookieStrategy;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
+	private BonStoreLoginSuccessHandler bonStoreLoginSuccessHandler;
+
+
+
+	/**
+	 * @return the bonStoreLoginSuccessHandler
+	 */
+	public BonStoreLoginSuccessHandler getBonStoreLoginSuccessHandler()
+	{
+		return bonStoreLoginSuccessHandler;
+	}
+
+	/**
+	 * @param bonStoreLoginSuccessHandler
+	 *           the bonStoreLoginSuccessHandler to set
+	 */
+	public void setBonStoreLoginSuccessHandler(final BonStoreLoginSuccessHandler bonStoreLoginSuccessHandler)
+	{
+		this.bonStoreLoginSuccessHandler = bonStoreLoginSuccessHandler;
+	}
 
 	@Override
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
 			final Authentication authentication) throws IOException, ServletException
 	{
+		getBonStoreLoginSuccessHandler().registerSuccessLogin(request.getParameter("j_username"));
 		getGuidCookieStrategy().setCookie(request, response);
 		getAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
 	}

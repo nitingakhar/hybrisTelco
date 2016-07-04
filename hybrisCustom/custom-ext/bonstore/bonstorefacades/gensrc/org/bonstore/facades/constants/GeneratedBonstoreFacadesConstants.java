@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jun 15, 2016 12:15:45 PM                    ---
+ * --- Generated at Jul 1, 2016 11:40:53 AM                     ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.facades.constants;

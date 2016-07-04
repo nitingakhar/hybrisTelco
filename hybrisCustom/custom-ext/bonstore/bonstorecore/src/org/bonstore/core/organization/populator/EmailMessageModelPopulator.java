@@ -70,10 +70,6 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 			sBuilder.append(customerModel.getName() + "<br>");
 		});
 
-		/*
-		 * for (final CustomerModel customerModel : customersList) { sBuilder.append("<br>");
-		 * sBuilder.append(customerModel.getName() + "<br>"); }
-		 */
 		return NUM_USERS + "<br>" + sBuilder.toString();
 	}
 

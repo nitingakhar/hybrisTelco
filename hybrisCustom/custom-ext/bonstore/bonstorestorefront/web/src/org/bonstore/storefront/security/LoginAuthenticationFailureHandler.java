@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.security;
 
@@ -29,6 +29,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFailureHandler
 {
 	private BruteForceAttackCounter bruteForceAttackCounter;
+	private BonStoreLoginFailureCounter bonStoreLoginFailureCounter;
 
 	@Override
 	public void onAuthenticationFailure(final HttpServletRequest request, final HttpServletResponse response,
@@ -36,11 +37,30 @@ public class LoginAuthenticationFailureHandler extends SimpleUrlAuthenticationFa
 	{
 		// Register brute attacks
 		bruteForceAttackCounter.registerLoginFailure(request.getParameter("j_username"));
+		getBonStoreLoginFailureCounter().registerFailedLogin(request.getParameter("j_username"));
 
 		// Store the j_username in the session
 		request.getSession().setAttribute("SPRING_SECURITY_LAST_USERNAME", request.getParameter("j_username"));
 
 		super.onAuthenticationFailure(request, response, exception);
+	}
+
+	/**
+	 * @return the bonStoreLoginFailureCounter
+	 */
+	public BonStoreLoginFailureCounter getBonStoreLoginFailureCounter()
+	{
+		return bonStoreLoginFailureCounter;
+	}
+
+
+	/**
+	 * @param bonStoreLoginFailureCounter
+	 *           the bonStoreLoginFailureCounter to set
+	 */
+	public void setBonStoreLoginFailureCounter(final BonStoreLoginFailureCounter bonStoreLoginFailureCounter)
+	{
+		this.bonStoreLoginFailureCounter = bonStoreLoginFailureCounter;
 	}
 
 

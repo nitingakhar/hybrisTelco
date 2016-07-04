@@ -67,7 +67,7 @@ public class DefaultOrgUserServiceUnitTest
 		organizationModels.add(organizationModel);
 		when(usersDao.getOrganizations()).thenReturn(organizationModels);
 		final List<OrganizationModel> organizationModelsList = defaultOrgUserService.getOrganizations();
-		assertEquals("Number of organizations should be 0", 0, organizationModelsList.get(0).getCustomers().size());
+		assertEquals("Number of customers in the organization should be 0", 0, organizationModelsList.get(0).getCustomers().size());
 	}
 
 	@Test
@@ -80,7 +80,7 @@ public class DefaultOrgUserServiceUnitTest
 		when(usersDao.getOrganizations()).thenReturn(organizationModels);
 		when(usersDao.getOrganizations().get(0).getCustomers()).thenReturn(customerModels);
 		final List<OrganizationModel> orgsList = defaultOrgUserService.getOrganizations();
-		assertEquals("Number of customers should be 2", 2, orgsList.get(0).getCustomers().size());
+		assertEquals("Number of customers in the organization should be 2", 2, orgsList.get(0).getCustomers().size());
 	}
 
 }
