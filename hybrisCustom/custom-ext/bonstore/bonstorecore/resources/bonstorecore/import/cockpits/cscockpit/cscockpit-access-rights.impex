@@ -11,6 +11,61 @@ Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
 UserGroup;customerservicegroup;employeegroup;;;;;;;
 # Corrections for other groups;;;;;;;;;
 
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;csagentgroup;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;-;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phonenumber;+;+;;;
+;;;;Organization.id;+;-;;;
+;;;;Organization.customers;+;-;;;
+
+$END_USERRIGHTS
+
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;CallCenterAdminGroup;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;+;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phonenumber;+;+;;;
+;;;;Organization.id;+;+;;;
+;;;;Organization.customers;+;+;;;
+;;;;Customer.title;+;+;;;
+;;;;Customer.name;+;+;;;
+;;;;Customer.loginDisabled;+;+;;;
+
+$END_USERRIGHTS
+
+
+$START_USERRIGHTS
+Type;UID;MemberOfGroups;Password;Target;read;change;create;remove;change_perm
+
+UserGroup;cockpitgroup;;;;;;;;
+
+# Access Rights for Organization;;;;;;;;
+;;;;Organization;+;+;;;
+;;;;Organization.email;+;+;;;
+;;;;Organization.name;+;+;;;
+;;;;Organization.phonenumber;+;+;;;
+;;;;Organization.id;+;+;;;
+;;;;Organization.customers;+;+;;;
+
+$END_USERRIGHTS
+
+
+
+
+
 #;;;;RelationAttributeDescriptor;+;-;-;-;-
 #;;;;ComposedType.code;+;-;-;-;-
 #;;;;ComposedType.name;+;-;-;-;-
