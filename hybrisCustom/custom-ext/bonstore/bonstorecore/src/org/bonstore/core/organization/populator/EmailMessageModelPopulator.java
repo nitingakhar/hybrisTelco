@@ -64,11 +64,13 @@ public class EmailMessageModelPopulator implements Populator<OrganizationModel, 
 		}
 		final StringBuilder sBuilder = new StringBuilder();
 
+
 		final List<CustomerModel> customerModelList = customersList;
 		customerModelList.stream().forEach((customerModel) -> {
 			sBuilder.append("<br>");
 			sBuilder.append(customerModel.getName() + "<br>");
 		});
+
 
 		return NUM_USERS + "<br>" + sBuilder.toString();
 	}

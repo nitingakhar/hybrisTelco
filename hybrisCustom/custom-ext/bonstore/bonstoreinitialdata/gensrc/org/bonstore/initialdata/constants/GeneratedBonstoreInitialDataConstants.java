@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jul 1, 2016 11:40:53 AM                     ---
+ * --- Generated at Jul 6, 2016 7:25:09 AM                      ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.initialdata.constants;

@@ -2,6 +2,7 @@
 *.jar
 *.war
 *.ear
+*.bat
 
 # IDE files
 /.idea/
@@ -26,12 +27,21 @@
 /installer
 /licenses
 /META-INF
+/workspace
 README
+*.bat
+**/import
 
 git_info.properties
 *.class
 **/build.xml
+
 **/gensrc
+**/gensrc/*
+**/gensrc/**
+*/gensrc/**
+*/gensrc/*
+
 **/eclipsebin
 **/extensioninfo.xsd
 **/platformhome.properties
