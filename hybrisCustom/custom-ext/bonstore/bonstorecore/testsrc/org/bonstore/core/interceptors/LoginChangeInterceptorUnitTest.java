@@ -45,7 +45,7 @@ public class LoginChangeInterceptorUnitTest
 		when(customerModel.getAttemptCount()).thenReturn(MAX_ATTEMPT_COUNT);
 	}
 
-	//@Test
+	@Test
 	public void testOnPrepareWhenCustomerLoginStatusIsDisabled() throws InterceptorException
 	{
 		when(customerModel.isLoginDisabled()).thenReturn(false);
