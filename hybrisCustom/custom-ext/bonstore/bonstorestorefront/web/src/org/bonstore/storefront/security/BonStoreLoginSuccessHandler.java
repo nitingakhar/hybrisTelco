@@ -15,14 +15,11 @@ import org.apache.commons.lang.StringUtils;
  */
 public class BonStoreLoginSuccessHandler extends AbstractAcceleratorAuthenticationProvider
 {
-
 	public void registerSuccessLogin(final String uid)
 	{
 		if (StringUtils.isNotEmpty(uid))
 		{
 			final CustomerModel customerModel = (CustomerModel) getUserService().getUserForUID(StringUtils.lowerCase(uid));
-
-			getModelService().refresh(customerModel);
 			final int attemptCount = customerModel.getAttemptCount();
 			if (attemptCount > 0 && attemptCount < 3)
 			{

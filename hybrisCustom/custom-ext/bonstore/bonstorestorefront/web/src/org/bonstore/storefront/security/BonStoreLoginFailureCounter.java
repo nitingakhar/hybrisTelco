@@ -23,33 +23,20 @@ public class BonStoreLoginFailureCounter extends AbstractAcceleratorAuthenticati
 		if (StringUtils.isNotEmpty(uid))
 		{
 			final CustomerModel customerModel = (CustomerModel) getUserService().getUserForUID(StringUtils.lowerCase(uid));
-			getModelService().refresh(customerModel);
 			int attemptCount = customerModel.getAttemptCount();
 			++attemptCount;
-			boolean flag = false;
-
-			if (attemptCount < 3)
-			{
-				customerModel.setAttemptCount(attemptCount);
-				flag = true;
-			}
-
 			if (attemptCount == 3)
 			{
-				flag = true;
-				customerModel.setAttemptCount(attemptCount);
 				customerModel.setStatus(true);
 				customerModel.setLoginDisabled(true);
 			}
-
-			if (flag)
-			{
-				getModelService().save(customerModel);
-			}
+			customerModel.setAttemptCount(attemptCount);
+			getModelService().save(customerModel);
 
 			if (LOG.isDebugEnabled())
 			{
-				LOG.debug("Failed Login for user " + uid + ", count now " + attemptCount);
+				LOG.debug("Failed Login for user " + uid + ", count now " + attemptCount + "login status is"
+						+ customerModel.isLoginDisabled());
 			}
 		}
 
