@@ -467,7 +467,9 @@ button.place-order {
 }
 
 
-
+#savedOrganizationListHolder{
+	display:none;
+}
 
 
 

@@ -15,6 +15,8 @@ package org.bonstore.core.organization.impl;
 
 
 
+import de.hybris.platform.core.model.user.CustomerModel;
+
 import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
@@ -35,6 +37,30 @@ public class DefaultOrgUserService implements OrgUserService
 	public List<OrganizationModel> getOrganizations()
 	{
 		return usersDao.getOrganizations();
+	}
+
+	@Override
+	public List<OrganizationModel> getOrganizationByID(final String organizationId)
+	{
+		return usersDao.getOrganizationByID(organizationId);
+	}
+
+	@Override
+	public void editOrganization(final OrganizationModel organizationModel)
+	{
+		usersDao.editOrganization(organizationModel);
+	}
+
+	@Override
+	public void removeOrganization(final CustomerModel customerModel, final OrganizationModel organizationModel)
+	{
+		usersDao.removeOrganization(customerModel, organizationModel);
+	}
+
+	@Override
+	public void addOrganization(final OrganizationModel organizationModel)
+	{
+		usersDao.addOrganization(organizationModel);
 	}
 
 	@Required

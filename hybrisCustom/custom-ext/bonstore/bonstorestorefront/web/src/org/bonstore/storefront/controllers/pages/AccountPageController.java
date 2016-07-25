@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.controllers.pages;
 
@@ -58,7 +58,6 @@ import de.hybris.platform.commerceservices.search.pagedata.SearchPageData;
 import de.hybris.platform.commerceservices.util.ResponsiveUtils;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
 import de.hybris.platform.util.Config;
-import org.bonstore.storefront.controllers.ControllerConstants;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -73,6 +72,11 @@ import javax.annotation.Resource;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bonstore.core.facades.BonStoreCustomerFacade;
+import org.bonstore.data.OrganizationData;
+import org.bonstore.storefront.controllers.ControllerConstants;
+import org.bonstore.storefront.forms.OrganizationForm;
+import org.bonstore.storefront.validator.BonStoreOrganizationValidator;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -110,6 +114,12 @@ public class AccountPageController extends AbstractSearchPageController
 	private static final String COUNTRY_ATTR = "country";
 	private static final String REGIONS_ATTR = "regions";
 	private static final String MY_ACCOUNT_ADDRESS_BOOK_URL = "/my-account/address-book";
+
+	private static final String ORGANIZATION_FORM_ATTR = "organizationForm";
+	private static final String ORGANIZATIONS_EMPTY_ATTR = "organizationsEmpty";
+
+	private static final String TEXT_ACCOUNT_ORGANIZATIONS = "text.account.organizations";
+	private static final String ORGANIZATIONS_DATA_ATTR = "organizationsData";
 	// Internal Redirects
 	private static final String REDIRECT_TO_ADDRESS_BOOK_PAGE = REDIRECT_PREFIX + MY_ACCOUNT_ADDRESS_BOOK_URL;
 	private static final String REDIRECT_TO_PAYMENT_INFO_PAGE = REDIRECT_PREFIX + "/my-account/payment-details";
@@ -126,6 +136,7 @@ public class AccountPageController extends AbstractSearchPageController
 	 */
 	private static final String ORDER_CODE_PATH_VARIABLE_PATTERN = "{orderCode:.*}";
 	private static final String ADDRESS_CODE_PATH_VARIABLE_PATTERN = "{addressCode:.*}";
+	private static final String ORGANIZATION_CODE_PATH_VARIABLE_PATTERN = "{organizationId:.*}";
 
 	// CMS Pages
 	private static final String ACCOUNT_CMS_PAGE = "account";
@@ -138,6 +149,14 @@ public class AccountPageController extends AbstractSearchPageController
 	private static final String PAYMENT_DETAILS_CMS_PAGE = "payment-details";
 	private static final String ORDER_HISTORY_CMS_PAGE = "orders";
 	private static final String ORDER_DETAIL_CMS_PAGE = "order";
+
+	private static final String ORGANIZATIONS_CMS_PAGE = "organizations";
+	private static final String ADD_EDIT_ORGANIZATION_CMS_PAGE = "add-edit-organization";
+	private static final String MY_ACCOUNT_ORGANIZATIONS_URL = "/my-account/organizations";
+	private static final String REDIRECT_TO_EDIT_ORGANIZATION_PAGE = REDIRECT_PREFIX + "/my-account/edit-organization/";
+	private static final String REDIRECT_TO_ORGANIZATIONS_PAGE = REDIRECT_PREFIX + MY_ACCOUNT_ORGANIZATIONS_URL;
+	private static final String TEXT_ACCOUNT_ORG_ADDEDIT_ORGANIZATION = "text.account.organization.addEditOrganization";
+
 
 	private static final Logger LOG = Logger.getLogger(AccountPageController.class);
 
@@ -182,6 +201,12 @@ public class AccountPageController extends AbstractSearchPageController
 
 	@Resource(name = "orderGridFormFacade")
 	private OrderGridFormFacade orderGridFormFacade;
+
+	@Resource(name = "bonStoreCustomerFacade")
+	private BonStoreCustomerFacade bonStoreCustomerFacade;
+
+	@Resource(name = "bonStoreOrganizationValidator")
+	private BonStoreOrganizationValidator bonStoreOrganizationValidator;
 
 	protected PasswordValidator getPasswordValidator()
 	{
@@ -301,8 +326,7 @@ public class AccountPageController extends AbstractSearchPageController
 	@RequireHardLogIn
 	public String orders(@RequestParam(value = "page", defaultValue = "0") final int page,
 			@RequestParam(value = "show", defaultValue = "Page") final ShowMode showMode,
-			@RequestParam(value = "sort", required = false) final String sortCode, final Model model)
-			throws CMSItemNotFoundException
+			@RequestParam(value = "sort", required = false) final String sortCode, final Model model) throws CMSItemNotFoundException
 	{
 		// Handle paged search results
 		final PageableData pageableData = createPageableData(page, 5, sortCode, showMode);
@@ -327,8 +351,8 @@ public class AccountPageController extends AbstractSearchPageController
 			model.addAttribute("orderData", orderDetails);
 
 			final List<Breadcrumb> breadcrumbs = accountBreadcrumbBuilder.getBreadcrumbs(null);
-			breadcrumbs.add(new Breadcrumb("/my-account/orders", getMessageSource().getMessage("text.account.orderHistory", null,
-					getI18nService().getCurrentLocale()), null));
+			breadcrumbs.add(new Breadcrumb("/my-account/orders",
+					getMessageSource().getMessage("text.account.orderHistory", null, getI18nService().getCurrentLocale()), null));
 			breadcrumbs.add(new Breadcrumb("#", getMessageSource().getMessage("text.account.order.orderBreadcrumb", new Object[]
 			{ orderDetails.getCode() }, "Order {0}", getI18nService().getCurrentLocale()), null));
 			model.addAttribute(BREADCRUMBS_ATTR, breadcrumbs);
@@ -346,7 +370,8 @@ public class AccountPageController extends AbstractSearchPageController
 		return getViewForPage(model);
 	}
 
-	@RequestMapping(value = "/order/" + ORDER_CODE_PATH_VARIABLE_PATTERN + "/getReadOnlyProductVariantMatrix", method = RequestMethod.GET)
+	@RequestMapping(value = "/order/" + ORDER_CODE_PATH_VARIABLE_PATTERN
+			+ "/getReadOnlyProductVariantMatrix", method = RequestMethod.GET)
 	@RequireHardLogIn
 	public String getProductVariantMatrixForResponsive(@PathVariable("orderCode") final String orderCode,
 			@RequestParam("productCode") final String productCode, final Model model)
@@ -567,8 +592,8 @@ public class AccountPageController extends AbstractSearchPageController
 
 	@RequestMapping(value = "/update-password", method = RequestMethod.POST)
 	@RequireHardLogIn
-	public String updatePassword(final UpdatePasswordForm updatePasswordForm, final BindingResult bindingResult,
-			final Model model, final RedirectAttributes redirectAttributes) throws CMSItemNotFoundException
+	public String updatePassword(final UpdatePasswordForm updatePasswordForm, final BindingResult bindingResult, final Model model,
+			final RedirectAttributes redirectAttributes) throws CMSItemNotFoundException
 	{
 		getPasswordValidator().validate(updatePasswordForm, bindingResult);
 		if (!bindingResult.hasErrors())
@@ -636,10 +661,11 @@ public class AccountPageController extends AbstractSearchPageController
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ADDRESS_CMS_PAGE));
 
 		final List<Breadcrumb> breadcrumbs = accountBreadcrumbBuilder.getBreadcrumbs(null);
-		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ADDRESS_BOOK_URL, getMessageSource().getMessage(TEXT_ACCOUNT_ADDRESS_BOOK, null,
-				getI18nService().getCurrentLocale()), null));
-		breadcrumbs.add(new Breadcrumb("#", getMessageSource().getMessage("text.account.addressBook.addEditAddress", null,
-				getI18nService().getCurrentLocale()), null));
+		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ADDRESS_BOOK_URL,
+				getMessageSource().getMessage(TEXT_ACCOUNT_ADDRESS_BOOK, null, getI18nService().getCurrentLocale()), null));
+		breadcrumbs.add(new Breadcrumb("#",
+				getMessageSource().getMessage("text.account.addressBook.addEditAddress", null, getI18nService().getCurrentLocale()),
+				null));
 		model.addAttribute(BREADCRUMBS_ATTR, breadcrumbs);
 		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
 		return getViewForPage(model);
@@ -720,8 +746,8 @@ public class AccountPageController extends AbstractSearchPageController
 		userFacade.addAddress(newAddress);
 
 
-		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER, "account.confirmation.address.added",
-				null);
+		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
+				"account.confirmation.organization.added", null);
 
 		return REDIRECT_TO_EDIT_ADDRESS_PAGE + newAddress.getId();
 	}
@@ -793,10 +819,11 @@ public class AccountPageController extends AbstractSearchPageController
 		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ADDRESS_CMS_PAGE));
 
 		final List<Breadcrumb> breadcrumbs = accountBreadcrumbBuilder.getBreadcrumbs(null);
-		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ADDRESS_BOOK_URL, getMessageSource().getMessage(TEXT_ACCOUNT_ADDRESS_BOOK, null,
-				getI18nService().getCurrentLocale()), null));
-		breadcrumbs.add(new Breadcrumb("#", getMessageSource().getMessage("text.account.addressBook.addEditAddress", null,
-				getI18nService().getCurrentLocale()), null));
+		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ADDRESS_BOOK_URL,
+				getMessageSource().getMessage(TEXT_ACCOUNT_ADDRESS_BOOK, null, getI18nService().getCurrentLocale()), null));
+		breadcrumbs.add(new Breadcrumb("#",
+				getMessageSource().getMessage("text.account.addressBook.addEditAddress", null, getI18nService().getCurrentLocale()),
+				null));
 		model.addAttribute(BREADCRUMBS_ATTR, breadcrumbs);
 		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
 		model.addAttribute("edit", Boolean.TRUE);
@@ -887,8 +914,8 @@ public class AccountPageController extends AbstractSearchPageController
 	@RequestMapping(value = "/select-suggested-address", method = RequestMethod.POST)
 	public String doSelectSuggestedAddress(final AddressForm addressForm, final RedirectAttributes redirectModel)
 	{
-		final Set<String> resolveCountryRegions = org.springframework.util.StringUtils.commaDelimitedListToSet(Config
-				.getParameter("resolve.country.regions"));
+		final Set<String> resolveCountryRegions = org.springframework.util.StringUtils
+				.commaDelimitedListToSet(Config.getParameter("resolve.country.regions"));
 
 		final AddressData selectedAddress = new AddressData();
 		selectedAddress.setId(addressForm.getAddressId());
@@ -923,14 +950,14 @@ public class AccountPageController extends AbstractSearchPageController
 
 		if (Boolean.TRUE.equals(addressForm.getEditAddress()))
 		{
-			selectedAddress.setDefaultAddress(Boolean.TRUE.equals(addressForm.getDefaultAddress())
-					|| userFacade.getAddressBook().size() <= 1);
+			selectedAddress.setDefaultAddress(
+					Boolean.TRUE.equals(addressForm.getDefaultAddress()) || userFacade.getAddressBook().size() <= 1);
 			userFacade.editAddress(selectedAddress);
 		}
 		else
 		{
-			selectedAddress.setDefaultAddress(Boolean.TRUE.equals(addressForm.getDefaultAddress())
-					|| userFacade.isAddressBookEmpty());
+			selectedAddress
+					.setDefaultAddress(Boolean.TRUE.equals(addressForm.getDefaultAddress()) || userFacade.isAddressBookEmpty());
 			userFacade.addAddress(selectedAddress);
 		}
 
@@ -1002,4 +1029,154 @@ public class AccountPageController extends AbstractSearchPageController
 				"text.account.profile.paymentCart.removed");
 		return REDIRECT_TO_PAYMENT_INFO_PAGE;
 	}
+
+
+	@RequestMapping(value = "/organizations", method = RequestMethod.GET)
+	@RequireHardLogIn
+	public String getOrganizations(final Model model) throws CMSItemNotFoundException
+	{
+		model.addAttribute(ORGANIZATIONS_DATA_ATTR, bonStoreCustomerFacade.getOrganizationsForCurrentUser());
+
+		storeCmsPageInModel(model, getContentPageForLabelOrId(ORGANIZATIONS_CMS_PAGE));
+		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ORGANIZATIONS_CMS_PAGE));
+		model.addAttribute(BREADCRUMBS_ATTR, accountBreadcrumbBuilder.getBreadcrumbs(TEXT_ACCOUNT_ORGANIZATIONS));
+		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		return getViewForPage(model);
+	}
+
+	@RequestMapping(value = "/edit-organization/" + ORGANIZATION_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.GET)
+	@RequireHardLogIn
+	public String editOrganization(@PathVariable("organizationId") final String organizationId, final Model model)
+			throws CMSItemNotFoundException
+	{
+		final OrganizationForm organizationForm = new OrganizationForm();
+		model.addAttribute(ORGANIZATION_FORM_ATTR, organizationForm);
+		final List<OrganizationData> organizationListData = bonStoreCustomerFacade.getOrganizationsForCurrentUser();
+		model.addAttribute(ORGANIZATIONS_EMPTY_ATTR, Boolean.valueOf(CollectionUtils.isEmpty(organizationListData)));
+
+
+		for (final OrganizationData organizationData : organizationListData)
+		{
+			if (organizationData.getId() != null && organizationData.getId().equals(organizationId))
+			{
+				organizationForm.setId(organizationData.getId());
+				organizationForm.setEmail(organizationData.getEmail());
+				organizationForm.setPhonenumber(organizationData.getPhonenumber());
+				organizationForm.setName(organizationData.getName());
+				break;
+			}
+		}
+
+		storeCmsPageInModel(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+
+		final List<Breadcrumb> breadcrumbs = accountBreadcrumbBuilder.getBreadcrumbs(null);
+		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ORGANIZATIONS_URL,
+				getMessageSource().getMessage(TEXT_ACCOUNT_ORG_ADDEDIT_ORGANIZATION, null, getI18nService().getCurrentLocale()),
+				null));
+		breadcrumbs.add(new Breadcrumb("#",
+				getMessageSource().getMessage(TEXT_ACCOUNT_ORG_ADDEDIT_ORGANIZATION, null, getI18nService().getCurrentLocale()),
+				null));
+		model.addAttribute(BREADCRUMBS_ATTR, breadcrumbs);
+		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		model.addAttribute("edit", Boolean.TRUE);
+		return getViewForPage(model);
+	}
+
+
+	@RequestMapping(value = "/edit-organization/" + ORGANIZATION_CODE_PATH_VARIABLE_PATTERN, method = RequestMethod.POST)
+	@RequireHardLogIn
+	public String editOrganization(final OrganizationForm organizationForm, final BindingResult bindingResult, final Model model,
+			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
+	{
+
+		bonStoreOrganizationValidator.validate(organizationForm, bindingResult);
+
+		if (bindingResult.hasErrors())
+		{
+			GlobalMessages.addErrorMessage(model, FORM_GLOBAL_ERROR);
+			storeCmsPageInModel(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+			setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+			return getViewForPage(model);
+		}
+		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		final OrganizationData newOrganizationData = new OrganizationData();
+		newOrganizationData.setEmail(organizationForm.getEmail());
+		newOrganizationData.setId(organizationForm.getId());
+		newOrganizationData.setName(organizationForm.getName());
+		newOrganizationData.setPhonenumber(organizationForm.getPhonenumber());
+		model.addAttribute("edit", Boolean.TRUE);
+		bonStoreCustomerFacade.editOrganization(newOrganizationData);
+		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
+				"account.confirmation.organization.updated", null);
+		return REDIRECT_TO_EDIT_ORGANIZATION_PAGE + newOrganizationData.getId();
+	}
+
+	@RequestMapping(value = "/remove-organization/" + ORGANIZATION_CODE_PATH_VARIABLE_PATTERN, method =
+	{ RequestMethod.GET, RequestMethod.POST })
+	@RequireHardLogIn
+	public String removeOrganization(@PathVariable("organizationId") final String organizationId,
+			final RedirectAttributes redirectModel)
+	{
+		final OrganizationData organizationData = new OrganizationData();
+		organizationData.setId(organizationId);
+		bonStoreCustomerFacade.removeOrganization(organizationData);
+
+		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
+				"account.confirmation.organization.removed");
+		return REDIRECT_TO_ORGANIZATIONS_PAGE;
+	}
+
+	@RequestMapping(value = "/add-organization", method = RequestMethod.GET)
+	@RequireHardLogIn
+	public String addOrganization(final Model model) throws CMSItemNotFoundException
+	{
+		final OrganizationForm organizationForm = new OrganizationForm();
+		model.addAttribute(ORGANIZATION_FORM_ATTR, organizationForm);
+		storeCmsPageInModel(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+		setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+
+		final List<Breadcrumb> breadcrumbs = accountBreadcrumbBuilder.getBreadcrumbs(null);
+		breadcrumbs.add(new Breadcrumb(MY_ACCOUNT_ORGANIZATIONS_URL,
+				getMessageSource().getMessage(TEXT_ACCOUNT_ORGANIZATIONS, null, getI18nService().getCurrentLocale()), null));
+		breadcrumbs.add(new Breadcrumb("#",
+				getMessageSource().getMessage(TEXT_ACCOUNT_ORG_ADDEDIT_ORGANIZATION, null, getI18nService().getCurrentLocale()),
+				null));
+		model.addAttribute(BREADCRUMBS_ATTR, breadcrumbs);
+		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		return getViewForPage(model);
+	}
+
+
+
+	@RequestMapping(value = "/add-organization", method = RequestMethod.POST)
+	@RequireHardLogIn
+	public String addOrganization(final OrganizationForm organizationForm, final BindingResult bindingResult, final Model model,
+			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
+	{
+		bonStoreOrganizationValidator.validate(organizationForm, bindingResult);
+
+		if (bindingResult.hasErrors())
+		{
+			GlobalMessages.addErrorMessage(model, FORM_GLOBAL_ERROR);
+			storeCmsPageInModel(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+			setUpMetaDataForContentPage(model, getContentPageForLabelOrId(ADD_EDIT_ORGANIZATION_CMS_PAGE));
+			return getViewForPage(model);
+		}
+
+		final OrganizationData newOrganizationData = new OrganizationData();
+		newOrganizationData.setId(organizationForm.getId());
+		newOrganizationData.setName(organizationForm.getName());
+		newOrganizationData.setEmail(organizationForm.getEmail());
+		newOrganizationData.setPhonenumber(organizationForm.getPhonenumber());
+
+		model.addAttribute("edit", Boolean.TRUE);
+		bonStoreCustomerFacade.addOrganization(newOrganizationData);
+
+		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER, "account.confirmation.address.added",
+				null);
+
+		return REDIRECT_TO_EDIT_ORGANIZATION_PAGE + organizationForm.getId();
+	}
+
 }

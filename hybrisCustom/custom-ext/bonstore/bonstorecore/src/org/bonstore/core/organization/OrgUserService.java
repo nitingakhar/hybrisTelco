@@ -13,6 +13,8 @@
  */
 package org.bonstore.core.organization;
 
+import de.hybris.platform.core.model.user.CustomerModel;
+
 import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
@@ -25,4 +27,13 @@ public interface OrgUserService
 {
 
 	List<OrganizationModel> getOrganizations();
+
+	List<OrganizationModel> getOrganizationByID(String organizationId);
+
+	void editOrganization(OrganizationModel organizationModel);
+
+	void removeOrganization(CustomerModel customerModel, OrganizationModel organizationModel);
+
+	void addOrganization(OrganizationModel organizationModel);
+
 }

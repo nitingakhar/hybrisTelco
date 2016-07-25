@@ -4,7 +4,8 @@
 package org.bonstore.core.interceptors;
 
 
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.hybris.bootstrap.annotations.UnitTest;
@@ -49,8 +50,9 @@ public class LoginChangeInterceptorUnitTest
 	public void testOnPrepareWhenCustomerLoginStatusIsDisabled() throws InterceptorException
 	{
 		when(customerModel.isLoginDisabled()).thenReturn(false);
-		doNothing().when(loginInterceptorUtil).changeCustomerDetails(customerModel);
+		//doNothing().when(loginInterceptorUtil).changeCustomerDetails(customerModel);
 		loginChangeInterceptor.onPrepare(customerModel, ctx);
+		verify(loginInterceptorUtil, times(1)).changeCustomerDetails(customerModel);
 	}
 
 	@Test
@@ -58,6 +60,7 @@ public class LoginChangeInterceptorUnitTest
 	{
 		when(customerModel.isLoginDisabled()).thenReturn(true);
 		loginChangeInterceptor.onPrepare(customerModel, ctx);
+		verify(loginInterceptorUtil, times(0)).changeCustomerDetails(customerModel);
 	}
 
 }

@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package de.hybris.platform.acceleratorstorefrontcommons.controllers.pages;
 
@@ -115,8 +115,8 @@ public abstract class AbstractRegisterPageController extends AbstractPageControl
 	{
 		storeCmsPageInModel(model, getCmsPage());
 		setUpMetaDataForContentPage(model, (ContentPageModel) getCmsPage());
-		final Breadcrumb loginBreadcrumbEntry = new Breadcrumb("#", getMessageSource().getMessage("header.link.login", null,
-				getI18nService().getCurrentLocale()), null);
+		final Breadcrumb loginBreadcrumbEntry = new Breadcrumb("#",
+				getMessageSource().getMessage("header.link.login", null, getI18nService().getCurrentLocale()), null);
 		model.addAttribute("breadcrumbs", Collections.singletonList(loginBreadcrumbEntry));
 		model.addAttribute(new RegisterForm());
 		return getView();

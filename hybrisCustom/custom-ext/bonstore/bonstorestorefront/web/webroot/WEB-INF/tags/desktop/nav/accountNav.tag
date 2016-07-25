@@ -35,6 +35,14 @@
 						<a href="${encodedUrl}"><spring:theme code="text.account.orderHistory" text="Order History"/></a>
 					</ycommerce:testId>
 				</li>
+				
+				<%-- <li class='${selected eq 'organizations' ? 'active' : ''}'>
+					<c:url value="/my-account/organizations" var="encodedUrl" />
+					<ycommerce:testId code="myAccount_organizations_navLink">
+						<a href="${encodedUrl}"><spring:theme code="text.account.organizations" text="Organizations"/></a>
+					</ycommerce:testId>
+				</li> --%>
+				
 			</ul>
 
 </div>

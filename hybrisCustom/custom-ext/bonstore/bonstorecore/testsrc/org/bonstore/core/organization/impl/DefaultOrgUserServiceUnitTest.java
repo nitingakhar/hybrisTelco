@@ -4,6 +4,7 @@
 package org.bonstore.core.organization.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.hybris.bootstrap.annotations.UnitTest;
@@ -45,6 +46,8 @@ public class DefaultOrgUserServiceUnitTest
 	List<OrganizationModel> organizationModels;
 	List<CustomerModel> customerModels;
 
+	private static final String ORGANIZATION_ID = "1";
+
 
 	@Before
 	public void setUp()
@@ -71,7 +74,7 @@ public class DefaultOrgUserServiceUnitTest
 	}
 
 	@Test
-	public void testCustomersListWhenCustomerListIsNotEmpty()
+	public void testGetOrganizationsListWhenCustomerListIsNotEmpty()
 	{
 		customerModels.add(firstCustomerModel);
 		customerModels.add(secondCustomerModel);
@@ -83,4 +86,33 @@ public class DefaultOrgUserServiceUnitTest
 		assertEquals("Number of customers in the organization should be 2", 2, orgsList.get(0).getCustomers().size());
 	}
 
+	@Test
+	public void testGetOrganizationByID()
+	{
+		organizationModels.add(organizationModel);
+		when(usersDao.getOrganizationByID(ORGANIZATION_ID)).thenReturn(organizationModels);
+		final List<OrganizationModel> orgList = defaultOrgUserService.getOrganizationByID(ORGANIZATION_ID);
+		assertEquals(organizationModels, orgList);
+	}
+
+	@Test
+	public void testEditOrganization()
+	{
+		defaultOrgUserService.editOrganization(organizationModel);
+		verify(usersDao).editOrganization(organizationModel);
+	}
+
+	@Test
+	public void testAddOrganization()
+	{
+		defaultOrgUserService.addOrganization(organizationModel);
+		verify(usersDao).addOrganization(organizationModel);
+	}
+
+	@Test
+	public void testRemoveOrganization()
+	{
+		defaultOrgUserService.removeOrganization(firstCustomerModel, organizationModel);
+		verify(usersDao).removeOrganization(firstCustomerModel, organizationModel);
+	}
 }

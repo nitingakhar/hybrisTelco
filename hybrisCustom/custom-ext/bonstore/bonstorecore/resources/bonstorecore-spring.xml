@@ -499,5 +499,14 @@
 		<property ref="loginChangeInterceptor" name="interceptor" />
 		<property name="typeCode" value="Customer" />
 	</bean>
+	
+	<alias name="defaultBonStoreCustomerFacade" alias="bonStoreCustomerFacade"/>
+	<bean id="defaultBonStoreCustomerFacade" class="org.bonstore.core.facades.impl.DefaultBonStoreCustomerFacade">
+	  	<property name="orgUserService" ref="orgUserService" />
+	  	<property name="userService" ref="userService" />
+	</bean>
+
+
+
 
 </beans>
