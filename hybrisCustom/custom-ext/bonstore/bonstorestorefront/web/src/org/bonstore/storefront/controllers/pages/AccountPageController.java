@@ -56,7 +56,9 @@ import de.hybris.platform.commerceservices.customer.DuplicateUidException;
 import de.hybris.platform.commerceservices.search.pagedata.PageableData;
 import de.hybris.platform.commerceservices.search.pagedata.SearchPageData;
 import de.hybris.platform.commerceservices.util.ResponsiveUtils;
+import de.hybris.platform.servicelayer.exceptions.ModelSavingException;
 import de.hybris.platform.servicelayer.exceptions.UnknownIdentifierException;
+import de.hybris.platform.servicelayer.interceptor.InterceptorException;
 import de.hybris.platform.util.Config;
 
 import java.util.Arrays;
@@ -156,6 +158,9 @@ public class AccountPageController extends AbstractSearchPageController
 	private static final String REDIRECT_TO_EDIT_ORGANIZATION_PAGE = REDIRECT_PREFIX + "/my-account/edit-organization/";
 	private static final String REDIRECT_TO_ORGANIZATIONS_PAGE = REDIRECT_PREFIX + MY_ACCOUNT_ORGANIZATIONS_URL;
 	private static final String TEXT_ACCOUNT_ORG_ADDEDIT_ORGANIZATION = "text.account.organization.addEditOrganization";
+	private static final String DUPLICATE_ORGANIZATION_ID = "account.organizationid.duplicate";
+	private static final String ORGANIZATION_REMOVED = "account.confirmation.organization.removed";
+	private static final String ORGANIZATION_NOT_REMOVED = "account.error.organization.not.removed";
 
 
 	private static final Logger LOG = Logger.getLogger(AccountPageController.class);
@@ -1106,7 +1111,22 @@ public class AccountPageController extends AbstractSearchPageController
 		newOrganizationData.setName(organizationForm.getName());
 		newOrganizationData.setPhonenumber(organizationForm.getPhonenumber());
 		model.addAttribute("edit", Boolean.TRUE);
-		bonStoreCustomerFacade.editOrganization(newOrganizationData);
+		try
+		{
+			bonStoreCustomerFacade.editOrganization(newOrganizationData);
+		}
+		catch (final ModelSavingException modelSavingException)
+		{
+			if (modelSavingException.getCause() instanceof InterceptorException)
+			{
+				LOG.error("Updating organization failed", modelSavingException);
+				model.addAttribute(organizationForm);
+				bindingResult.rejectValue("id", DUPLICATE_ORGANIZATION_ID);
+				GlobalMessages.addErrorMessage(model, DUPLICATE_ORGANIZATION_ID);
+				return editOrganization(organizationForm.getId(), model);
+			}
+
+		}
 		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
 				"account.confirmation.organization.updated", null);
 		return REDIRECT_TO_EDIT_ORGANIZATION_PAGE + newOrganizationData.getId();
@@ -1120,10 +1140,16 @@ public class AccountPageController extends AbstractSearchPageController
 	{
 		final OrganizationData organizationData = new OrganizationData();
 		organizationData.setId(organizationId);
-		bonStoreCustomerFacade.removeOrganization(organizationData);
+		final boolean removedOrganizationFlag = bonStoreCustomerFacade.removeOrganization(organizationId);
+		if (removedOrganizationFlag)
+		{
+			GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER, ORGANIZATION_REMOVED);
+		}
+		else
+		{
+			GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER, ORGANIZATION_NOT_REMOVED);
+		}
 
-		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
-				"account.confirmation.organization.removed");
 		return REDIRECT_TO_ORGANIZATIONS_PAGE;
 	}
 
@@ -1154,6 +1180,7 @@ public class AccountPageController extends AbstractSearchPageController
 	public String addOrganization(final OrganizationForm organizationForm, final BindingResult bindingResult, final Model model,
 			final RedirectAttributes redirectModel) throws CMSItemNotFoundException
 	{
+
 		bonStoreOrganizationValidator.validate(organizationForm, bindingResult);
 
 		if (bindingResult.hasErrors())
@@ -1171,10 +1198,27 @@ public class AccountPageController extends AbstractSearchPageController
 		newOrganizationData.setPhonenumber(organizationForm.getPhonenumber());
 
 		model.addAttribute("edit", Boolean.TRUE);
-		bonStoreCustomerFacade.addOrganization(newOrganizationData);
 
-		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER, "account.confirmation.address.added",
-				null);
+		try
+		{
+			bonStoreCustomerFacade.addOrganization(newOrganizationData);
+
+		}
+		catch (final ModelSavingException modelSavingException)
+		{
+			if (modelSavingException.getCause() instanceof InterceptorException)
+			{
+				LOG.error("Creating new organization failed", modelSavingException);
+				model.addAttribute(organizationForm);
+				bindingResult.rejectValue("id", DUPLICATE_ORGANIZATION_ID);
+				GlobalMessages.addErrorMessage(model, DUPLICATE_ORGANIZATION_ID);
+				return addOrganization(model);
+			}
+
+		}
+		GlobalMessages.addFlashMessage(redirectModel, GlobalMessages.CONF_MESSAGES_HOLDER,
+				"account.confirmation.organization.added", null);
+
 
 		return REDIRECT_TO_EDIT_ORGANIZATION_PAGE + organizationForm.getId();
 	}

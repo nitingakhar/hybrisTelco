@@ -32,7 +32,7 @@ public interface OrgUserService
 
 	void editOrganization(OrganizationModel organizationModel);
 
-	void removeOrganization(CustomerModel customerModel, OrganizationModel organizationModel);
+	boolean removeOrganization(CustomerModel customerModel, String organizationId);
 
 	void addOrganization(OrganizationModel organizationModel);
 

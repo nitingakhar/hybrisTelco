@@ -9,7 +9,6 @@ import de.hybris.platform.servicelayer.user.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import org.bonstore.core.facades.BonStoreCustomerFacade;
 import org.bonstore.core.model.OrganizationModel;
@@ -27,6 +26,7 @@ public class DefaultBonStoreCustomerFacade implements BonStoreCustomerFacade
 
 	private OrgUserService orgUserService;
 	private UserService userService;
+
 	@Autowired
 	private ModelService modelService;
 
@@ -48,31 +48,28 @@ public class DefaultBonStoreCustomerFacade implements BonStoreCustomerFacade
 	public void editOrganization(final OrganizationData organizationData)
 	{
 		final List<OrganizationModel> listOrgModel = orgUserService.getOrganizationByID(organizationData.getId());
-		final OrganizationModel organizationModel = listOrgModel.get(0);
-		orgUserService.editOrganization(mapOrgDataToOrgModel(organizationModel, organizationData));
+
+		if (listOrgModel != null && listOrgModel.size() == 1)
+		{
+			final OrganizationModel organizationModel = listOrgModel.get(0);
+			orgUserService.editOrganization(mapOrgDataToOrgModel(organizationModel, organizationData));
+		}
 	}
 
 	@Override
-	public void removeOrganization(final OrganizationData organizationData)
+	public boolean removeOrganization(final String organizationId)
 	{
-		final List<OrganizationModel> listOrgModel = orgUserService.getOrganizationByID(organizationData.getId());
-		final OrganizationModel organizationModel = listOrgModel.get(0);
-		orgUserService.removeOrganization(getCurrentUser(), mapOrgDataToOrgModel(organizationModel, organizationData));
+		return orgUserService.removeOrganization(getCurrentUser(), organizationId);
+
 	}
 
 	@Override
 	public void addOrganization(final OrganizationData organizationData)
 	{
 		final OrganizationModel organizationModel = modelService.create(OrganizationModel.class);
-		organizationModel.setId(Integer.parseInt(organizationData.getId()));
-		organizationModel.setPhonenumber(organizationData.getPhonenumber());
-		organizationModel.setName(organizationData.getName(), Locale.ENGLISH);
-		organizationModel.setEmail(organizationData.getEmail());
-		orgUserService.addOrganization(organizationModel);
+		orgUserService.addOrganization(mapOrgDataToOrgModel(organizationModel, organizationData));
 	}
 
-
-	// Helper methods
 
 	protected OrganizationModel mapOrgDataToOrgModel(final OrganizationModel organizationModel,
 			final OrganizationData organizationData)
@@ -98,7 +95,6 @@ public class DefaultBonStoreCustomerFacade implements BonStoreCustomerFacade
 			orgData.setEmail(om.getEmail());
 			organizationGroupDataList.add(orgData);
 		}
-
 		return organizationGroupDataList;
 
 	}

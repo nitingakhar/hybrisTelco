@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jul 22, 2016 12:11:45 PM                    ---
+ * --- Generated at Aug 2, 2016 7:00:57 PM                      ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.core.jalo;

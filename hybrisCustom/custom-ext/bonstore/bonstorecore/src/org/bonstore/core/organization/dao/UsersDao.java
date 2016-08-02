@@ -3,8 +3,6 @@
  */
 package org.bonstore.core.organization.dao;
 
-import de.hybris.platform.core.model.user.CustomerModel;
-
 import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
@@ -25,10 +23,10 @@ public interface UsersDao
 
 	List<OrganizationModel> getOrganizationByID(final String organizationId);
 
-	void editOrganization(final OrganizationModel organizationModel);
+	//void editOrganization(final OrganizationModel organizationModel);
 
-	void removeOrganization(final CustomerModel customerModel, final OrganizationModel organizationModel);
+	//void removeOrganization(final CustomerModel customerModel, final OrganizationModel organizationModel);
 
-	void addOrganization(OrganizationModel organizationModel);
+	//void addOrganization(OrganizationModel organizationModel);
 
 }

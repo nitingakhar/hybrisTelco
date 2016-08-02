@@ -15,6 +15,8 @@ package org.bonstore.storefront.controllers.pages;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
 
 import de.hybris.bootstrap.annotations.UnitTest;
 import de.hybris.platform.acceleratorservices.config.SiteConfigService;
@@ -116,6 +118,7 @@ public class AccountPageControllerTest
 
 	private static final String UPDATE_EMAIL_CMS_PAGE = "update-email";
 	private static final String UPDATE_PROFILE_CMS_PAGE = "update-profile";
+	private static final String ORGANIZATION_ID = "2";
 
 	@InjectMocks
 	private final AccountPageController accountController = Mockito.spy(new AccountPageController());
@@ -677,13 +680,12 @@ public class AccountPageControllerTest
 	@Test
 	public void shouldGetOrganizations() throws CMSItemNotFoundException
 	{
-		BDDMockito.given(bonStoreCustomerFacade.getOrganizationsForCurrentUser())
-				.willReturn(Collections.singletonList(organizationData));
+		given(bonStoreCustomerFacade.getOrganizationsForCurrentUser()).willReturn(Collections.singletonList(organizationData));
 
 		final String organizationsPage = accountController.getOrganizations(page);
-		Mockito.verify(page).addAttribute("organizationsData", Collections.singletonList(organizationData));
-		Mockito.verify(page).addAttribute(CMS_PAGE_MODEL, contentPageModel);
-		Mockito.verify(page).addAttribute("pageTitle", TITLE_FOR_PAGE);
+		verify(page).addAttribute("organizationsData", Collections.singletonList(organizationData));
+		verify(page).addAttribute(CMS_PAGE_MODEL, contentPageModel);
+		verify(page).addAttribute("pageTitle", TITLE_FOR_PAGE);
 
 		assertEquals(FULL_VIEW_PATH, organizationsPage);
 	}
@@ -692,11 +694,10 @@ public class AccountPageControllerTest
 	public void shouldGetEditOrganization() throws CMSItemNotFoundException
 	{
 		final String organizationPage = accountController.editOrganization(TEST_CODE, page);
-		Mockito.verify(page).addAttribute("organizationsEmpty",
+		verify(page).addAttribute("organizationsEmpty",
 				Boolean.valueOf(CollectionUtils.isEmpty(bonStoreCustomerFacade.getOrganizationsForCurrentUser())));
-		Mockito.verify(page).addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS,
-				ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
-		Mockito.verify(page).addAttribute("edit", Boolean.TRUE);
+		verify(page).addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_NOFOLLOW);
+		verify(page).addAttribute("edit", Boolean.TRUE);
 		assertEquals(FULL_VIEW_PATH, organizationPage);
 	}
 
@@ -705,8 +706,8 @@ public class AccountPageControllerTest
 	{
 		final String editOrganizationPage = accountController.editOrganization(organizationForm, bindingResult, page,
 				redirectModel);
-		Mockito.verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
-		Mockito.verify(bonStoreCustomerFacade).editOrganization(Mockito.any(OrganizationData.class));
+		verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
+		verify(bonStoreCustomerFacade).editOrganization(Mockito.any(OrganizationData.class));
 		assertThat(editOrganizationPage, CoreMatchers.containsString(REDIRECT_TO_EDIT_ORGANIZATION_PAGE));
 	}
 
@@ -714,7 +715,7 @@ public class AccountPageControllerTest
 	@Test
 	public void shouldNotEditInvalidOrganization() throws CMSItemNotFoundException
 	{
-		BDDMockito.given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
+		given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
 		final String organizationPage = accountController.editOrganization(organizationForm, bindingResult, page, redirectModel);
 		assertEquals(FULL_VIEW_PATH, organizationPage);
 	}
@@ -723,25 +724,35 @@ public class AccountPageControllerTest
 	public void shouldAddValidOrganization() throws CMSItemNotFoundException
 	{
 		final String addOrganizationPage = accountController.addOrganization(organizationForm, bindingResult, page, redirectModel);
-		Mockito.verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
-		Mockito.verify(bonStoreCustomerFacade).addOrganization((Mockito.any(OrganizationData.class)));
+		verify(bonStoreOrganizationValidator).validate(organizationForm, bindingResult);
+		verify(bonStoreCustomerFacade).addOrganization((Mockito.any(OrganizationData.class)));
 		assertThat(addOrganizationPage, CoreMatchers.containsString(REDIRECT_TO_EDIT_ORGANIZATION_PAGE));
 	}
 
 	@Test
 	public void shouldNotAddInvalidOrganization() throws CMSItemNotFoundException
 	{
-		BDDMockito.given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
+		given(Boolean.valueOf(bindingResult.hasErrors())).willReturn(Boolean.TRUE);
 		final String organizationPage = accountController.addOrganization(organizationForm, bindingResult, page, redirectModel);
 		assertEquals(FULL_VIEW_PATH, organizationPage);
 	}
 
+
 	@Test
-	public void shouldRemoveOrganization()
+	public void shouldRemoveOrganizationSuccessful()
 	{
-		final String organizationPage = accountController.removeOrganization(TEST_CODE, redirectModel);
-		Mockito.verify(bonStoreCustomerFacade).removeOrganization(Mockito.any(OrganizationData.class));
+		given(bonStoreCustomerFacade.removeOrganization(ORGANIZATION_ID)).willReturn(Boolean.TRUE);
+		final String organizationPage = accountController.removeOrganization(ORGANIZATION_ID, redirectModel);
 		assertEquals(REDIRECT_TO_ORGANIZATIONS_PAGE, organizationPage);
 	}
+
+	@Test
+	public void shouldNotRemoveOrganization()
+	{
+		given(bonStoreCustomerFacade.removeOrganization(ORGANIZATION_ID)).willReturn(Boolean.FALSE);
+		final String organizationPage = accountController.removeOrganization(ORGANIZATION_ID, redirectModel);
+		assertEquals(REDIRECT_TO_ORGANIZATIONS_PAGE, organizationPage);
+	}
+
 
 }

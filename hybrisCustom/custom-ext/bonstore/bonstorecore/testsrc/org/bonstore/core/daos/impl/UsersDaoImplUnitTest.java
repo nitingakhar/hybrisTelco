@@ -4,7 +4,6 @@
 package org.bonstore.core.daos.impl;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import de.hybris.bootstrap.annotations.UnitTest;
@@ -19,7 +18,6 @@ import java.util.List;
 
 import org.bonstore.core.model.OrganizationModel;
 import org.bonstore.core.organization.dao.impl.UsersDaoImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -50,18 +48,7 @@ public class UsersDaoImplUnitTest
 	private FlexibleSearchQuery flexibleSearchQuery;
 	@Mock
 	private ModelService modelService;
-	@Mock
-	List<OrganizationModel> organizationModelList;
 
-	private static final String ORG_ID = "1";
-
-
-	@Before
-	public void setUp()
-	{
-		//organizationModelList = new ArrayList<>();
-		organizationModelList.add(organizationModel);
-	}
 
 	@Test
 	public void testGetOrganizationList()
@@ -73,36 +60,6 @@ public class UsersDaoImplUnitTest
 		assertEquals(models, userDaoImpl.getOrganizations());
 	}
 
-	@Test
-	public void testEditOrganization()
-	{
-		userDaoImpl.editOrganization(organizationModel);
-		verify(modelService).saveAll(organizationModel);
-	}
 
-	@Test
-	public void testRemoveOrganizationWhenCustomerHasOrganization()
-	{
-		when(customerModel.getOrganizations()).thenReturn(organizationModelList);
-		when(organizationModelList.contains(organizationModel)).thenReturn(true);
-		userDaoImpl.removeOrganization(customerModel, organizationModel);
-		verify(modelService).remove(organizationModel);
-		verify(modelService).refresh(customerModel);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
-	public void testRemoveOrganizationSHouldThrowException()
-	{
-		when(customerModel.getOrganizations()).thenReturn(organizationModelList);
-		when(organizationModelList.contains(organizationModel)).thenReturn(false);
-		userDaoImpl.removeOrganization(customerModel, organizationModel);
-	}
-
-	@Test
-	public void testAddOrganization()
-	{
-		userDaoImpl.addOrganization(organizationModel);
-		verify(modelService).saveAll(organizationModel);
-	}
 
 }

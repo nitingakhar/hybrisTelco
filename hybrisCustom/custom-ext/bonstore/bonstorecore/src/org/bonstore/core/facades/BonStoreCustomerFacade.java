@@ -14,14 +14,14 @@ import org.bonstore.data.OrganizationData;
  */
 public interface BonStoreCustomerFacade
 {
-	public List<OrganizationData> getOrganizations();
+	List<OrganizationData> getOrganizations();
 
-	public List<OrganizationData> getOrganizationsForCurrentUser();
+	List<OrganizationData> getOrganizationsForCurrentUser();
 
-	public void editOrganization(OrganizationData organizationData);
+	void editOrganization(OrganizationData organizationData);
 
-	public void removeOrganization(OrganizationData organizationData);
+	boolean removeOrganization(String organizationId);
 
-	public void addOrganization(OrganizationData organizationData);
+	void addOrganization(OrganizationData organizationData);
 
 }

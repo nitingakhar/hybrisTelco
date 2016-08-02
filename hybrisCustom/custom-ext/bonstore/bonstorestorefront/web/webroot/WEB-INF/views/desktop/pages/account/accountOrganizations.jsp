@@ -38,9 +38,7 @@
 								<td style="padding: 10pt;">${fn:escapeXml(organization.email)}</td>
 								
 						<td style="padding: 10pt;">		
-						<div class="buttons">
-							<%-- <ycommerce:testId code="addressBook_addressOptions_label"> --%>
-								
+						<div class="buttons">								
 								<ycommerce:testId code="addressBook_editAddress_button">
 									<a class="button" href="edit-organization/${organization.id}">
 										<spring:theme code="text.edit" text="Edit"/>
@@ -54,36 +52,11 @@
 									<a class="button removeOrganizationButton" data-organization-id="${organization.id}" href="remove-organization/${organization.id}"><spring:theme code="text.remove" text="Remove"/></a>
 								</ycommerce:testId>
 						</div> 
-							<%-- </ycommerce:testId> --%>
 						</td>
 						</tr>
 						</ycommerce:testId>
 						
 					</div>
-					<%-- <div style="display:none">
-						<div id="popup_confirm_organization_removal_${organization.id}">
-							<div class="organizationItem">
-								<ul>
-								<li>
-								${fn:escapeXml(organization.id)}&nbsp;
-								${fn:escapeXml(organization.name)}&nbsp;
-								${fn:escapeXml(organization.phonenumber)}&nbsp;
-								${fn:escapeXml(organization.email)}
-								</li>
-								</ul>
-								<spring:theme code="text.organization.remove.confirmation" text="Are you sure you would like to delete this organization?"/>
-								<div class="buttons">
-									<a class="button removeOrganizationButton" data-organization-id="${organization.id}" href="remove-organization/${organization.id}">
-										<spring:theme code="text.yes" text="Yes"/>
-									</a>
-									<a class="button closeColorBox" data-organization-id="${organization.id}">
-										<spring:theme code="text.no" text="No"/>
-									</a>
-								</div>
-							</div>
-						</div>
-						
-					</div> --%>
 				</c:forEach>
 				</table>
 			</c:when>
