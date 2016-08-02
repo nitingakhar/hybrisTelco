@@ -179,6 +179,7 @@
 	<bean id="loginGuidAuthenticationSuccessHandler" class="org.bonstore.storefront.security.GUIDAuthenticationSuccessHandler" >
 		<property name="authenticationSuccessHandler" ref="loginAuthenticationSuccessHandler" />
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
+		<property name="bonStoreAuthenticationSuccessHandler" ref="bonStoreAuthenticationSuccessHandler"/>
 		<property name="bonStoreLoginSuccessHandler" ref="bonStoreLoginSuccessHandler"/>
 	</bean>
 
@@ -210,6 +211,8 @@
 	<bean id="loginCheckoutGuidAuthenticationSuccessHandler" class="org.bonstore.storefront.security.GUIDAuthenticationSuccessHandler" >
 		<property name="authenticationSuccessHandler" ref="loginCheckoutAuthenticationSuccessHandler" />
 		<property name="guidCookieStrategy" ref="guidCookieStrategy" />
+		<property name="bonStoreAuthenticationSuccessHandler" ref="bonStoreAuthenticationSuccessHandler"/>
+		<property name="bonStoreLoginSuccessHandler" ref="bonStoreLoginSuccessHandler"/>
 	</bean>
 
 	<bean id="loginCheckoutAuthenticationSuccessHandler" class="de.hybris.platform.acceleratorstorefrontcommons.security.StorefrontAuthenticationSuccessHandler" >
@@ -307,5 +310,66 @@
 		<property name="userService" ref="userService"/>
 		<property name="userDetailsService" ref="originalUidUserDetailsService"/>
 	</bean>
+	
+	<bean id="bonStoreAuthenticationSuccessHandler" class="org.bonstore.storefront.security.BonStoreAuthenticationSuccessHandler" >
+		<property name="bonStoreCartFacade" ref="bonStoreCartFacade"/>
+		<property name="customerFacade" ref="customerFacade" />
+		<property name="defaultTargetUrl" value="#{'responsive' == '${commerceservices.default.desktop.ui.experience}' ? '/' : '/my-account'}"/>
+		<property name="useReferer" value="true"/>
+		<property name="requestCache" ref="httpSessionRequestCache" />
+		<property name="uiExperienceService" ref="uiExperienceService"/>
+		<property name="sessionService" ref="sessionService"/>
+		<property name="cartFacade" ref="cartFacade"/>
+		<property name="forceDefaultTargetForUiExperienceLevel">
+			<map key-type="de.hybris.platform.commerceservices.enums.UiExperienceLevel" value-type="java.lang.Boolean">
+				<entry key="DESKTOP" value="false"/>
+				<entry key="MOBILE" value="false"/>
+			</map>
+		</property>
+		<property name="bruteForceAttackCounter" ref="bruteForceAttackCounter" />
+		<property name="restrictedPages">
+			<list>
+				<value>/login</value>
+			</list>
+		</property>
+		<property name="listRedirectUrlsForceDefaultTarget">
+			<list></list>
+		</property>
+	</bean>
+	
+		<bean id="bonStoreCartFacade" class="org.bonstore.storefront.facade.BonStoreCartFacade" >
+		<property name="bonStoreCommerceCartMergingStrategy" ref="bonStoreCommerceCartMergingStrategy"/>
+		<property name="cartService" ref="cartService"/>
+		<property name="miniCartConverter" ref="miniCartConverter"/>
+		<property name="cartConverter" ref="cartConverter"/>
+		<property name="commerceCartService" ref="commerceCartService"/>
+		<property name="productService" ref="productService"/>
+		<property name="cartModificationConverter" ref="cartModificationConverter"/>
+		<property name="cartRestorationConverter" ref="cartRestorationConverter"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="userService" ref="userService"/>
+		<property name="pointOfServiceService" ref="pointOfServiceService"/>
+		<property name="priceDataFactory" ref="priceDataFactory"/>
+		<property name="deliveryService" ref="deliveryService"/>
+		<property name="countryConverter" ref="countryConverter"/>
+		<property name="groupCartModificationListConverter" ref="groupCartModificationListConverter" />
+	</bean>
+
+	<bean id="bonStoreCommerceCartMergingStrategy" class="org.bonstore.storefront.order.impl.BonStoreCommerceCartMergingStrategy" >
+		<property name="userService" ref="userService"/>
+		<property name="commerceCartService" ref="commerceCartService"/>
+		<property name="baseSiteService" ref="baseSiteService"/>
+		<property name="commerceAddToCartStrategy" ref="commerceAddToCartStrategy"/>
+		<property name="cartEntryDao" ref="cartEntryDao"/>
+		<property name="cartService" ref="cartService"/>
+		<property name="commerceCartCalculationStrategy" ref="commerceCartCalculationStrategy"/>
+		<property name="commerceStockService" ref="commerceStockService"/>
+		<property name="entryOrderChecker" ref="commerceOrderEntryModifiableChecker"/>
+		<property name="modelService" ref="modelService"/>
+		<property name="productService" ref="productService"/>
+		<property name="baseStoreService" ref="baseStoreService"/>
+	</bean>
+	
+		
 
 </beans>

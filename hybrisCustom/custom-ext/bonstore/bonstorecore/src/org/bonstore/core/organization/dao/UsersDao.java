@@ -21,4 +21,12 @@ public interface UsersDao
 	 */
 	List<OrganizationModel> getOrganizations();
 
+	List<OrganizationModel> getOrganizationByID(final String organizationId);
+
+	//void editOrganization(final OrganizationModel organizationModel);
+
+	//void removeOrganization(final CustomerModel customerModel, final OrganizationModel organizationModel);
+
+	//void addOrganization(OrganizationModel organizationModel);
+
 }

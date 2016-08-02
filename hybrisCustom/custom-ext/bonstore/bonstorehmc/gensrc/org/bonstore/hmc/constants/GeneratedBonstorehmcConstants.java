@@ -1,7 +1,7 @@
 /*
  * ----------------------------------------------------------------
  * --- WARNING: THIS FILE IS GENERATED AND WILL BE OVERWRITTEN! ---
- * --- Generated at Jul 6, 2016 7:25:09 AM                      ---
+ * --- Generated at Aug 2, 2016 7:00:57 PM                      ---
  * ----------------------------------------------------------------
  */
 package org.bonstore.hmc.constants;

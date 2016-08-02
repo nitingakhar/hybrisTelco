@@ -7,6 +7,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 import de.hybris.bootstrap.annotations.UnitTest;
+import de.hybris.platform.core.model.user.CustomerModel;
+import de.hybris.platform.servicelayer.model.ModelService;
+import de.hybris.platform.servicelayer.search.FlexibleSearchQuery;
 import de.hybris.platform.servicelayer.search.FlexibleSearchService;
 import de.hybris.platform.servicelayer.search.SearchResult;
 
@@ -38,7 +41,13 @@ public class UsersDaoImplUnitTest
 	@Mock
 	private OrganizationModel organizationModel;
 	@Mock
+	private CustomerModel customerModel;
+	@Mock
 	private SearchResult<Object> searchResultObject;
+	@Mock
+	private FlexibleSearchQuery flexibleSearchQuery;
+	@Mock
+	private ModelService modelService;
 
 
 	@Test
@@ -50,6 +59,7 @@ public class UsersDaoImplUnitTest
 		when(searchResultObject.getResult()).thenReturn(Arrays.asList(organizationModel));
 		assertEquals(models, userDaoImpl.getOrganizations());
 	}
+
 
 
 }

@@ -34,25 +34,11 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	private GUIDCookieStrategy guidCookieStrategy;
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
 	private BonStoreLoginSuccessHandler bonStoreLoginSuccessHandler;
+	private BonStoreAuthenticationSuccessHandler bonStoreAuthenticationSuccessHandler;
 
 
 
-	/**
-	 * @return the bonStoreLoginSuccessHandler
-	 */
-	public BonStoreLoginSuccessHandler getBonStoreLoginSuccessHandler()
-	{
-		return bonStoreLoginSuccessHandler;
-	}
 
-	/**
-	 * @param bonStoreLoginSuccessHandler
-	 *           the bonStoreLoginSuccessHandler to set
-	 */
-	public void setBonStoreLoginSuccessHandler(final BonStoreLoginSuccessHandler bonStoreLoginSuccessHandler)
-	{
-		this.bonStoreLoginSuccessHandler = bonStoreLoginSuccessHandler;
-	}
 
 	@Override
 	public void onAuthenticationSuccess(final HttpServletRequest request, final HttpServletResponse response,
@@ -60,7 +46,8 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 	{
 		getBonStoreLoginSuccessHandler().registerSuccessLogin(request.getParameter("j_username"));
 		getGuidCookieStrategy().setCookie(request, response);
-		getAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
+		//getAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
+		getBonStoreAuthenticationSuccessHandler().onAuthenticationSuccess(request, response, authentication);
 	}
 
 	protected GUIDCookieStrategy getGuidCookieStrategy()
@@ -78,18 +65,50 @@ public class GUIDAuthenticationSuccessHandler implements AuthenticationSuccessHa
 		this.guidCookieStrategy = guidCookieStrategy;
 	}
 
+
+
 	protected AuthenticationSuccessHandler getAuthenticationSuccessHandler()
 	{
 		return authenticationSuccessHandler;
 	}
 
-	/**
-	 * @param authenticationSuccessHandler
-	 *           the authenticationSuccessHandler to set
-	 */
+
+
 	@Required
 	public void setAuthenticationSuccessHandler(final AuthenticationSuccessHandler authenticationSuccessHandler)
 	{
 		this.authenticationSuccessHandler = authenticationSuccessHandler;
+	}
+
+
+
+	public BonStoreAuthenticationSuccessHandler getBonStoreAuthenticationSuccessHandler()
+	{
+		return bonStoreAuthenticationSuccessHandler;
+	}
+
+
+	public void setBonStoreAuthenticationSuccessHandler(
+			final BonStoreAuthenticationSuccessHandler bonStoreAuthenticationSuccessHandler)
+	{
+		this.bonStoreAuthenticationSuccessHandler = bonStoreAuthenticationSuccessHandler;
+	}
+
+
+	/**
+	 * @return the bonStoreLoginSuccessHandler
+	 */
+	public BonStoreLoginSuccessHandler getBonStoreLoginSuccessHandler()
+	{
+		return bonStoreLoginSuccessHandler;
+	}
+
+	/**
+	 * @param bonStoreLoginSuccessHandler
+	 *           the bonStoreLoginSuccessHandler to set
+	 */
+	public void setBonStoreLoginSuccessHandler(final BonStoreLoginSuccessHandler bonStoreLoginSuccessHandler)
+	{
+		this.bonStoreLoginSuccessHandler = bonStoreLoginSuccessHandler;
 	}
 }

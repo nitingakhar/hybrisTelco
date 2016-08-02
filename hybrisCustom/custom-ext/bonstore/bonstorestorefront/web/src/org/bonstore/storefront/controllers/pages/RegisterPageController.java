@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.controllers.pages;
 
@@ -17,12 +17,12 @@ import de.hybris.platform.acceleratorstorefrontcommons.controllers.pages.Abstrac
 import de.hybris.platform.acceleratorstorefrontcommons.forms.RegisterForm;
 import de.hybris.platform.cms2.exceptions.CMSItemNotFoundException;
 import de.hybris.platform.cms2.model.pages.AbstractPageModel;
-import org.bonstore.storefront.controllers.ControllerConstants;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.bonstore.storefront.controllers.ControllerConstants;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
@@ -42,6 +42,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class RegisterPageController extends AbstractRegisterPageController
 {
 	private HttpSessionRequestCache httpSessionRequestCache;
+
+
 
 	@Override
 	protected AbstractPageModel getCmsPage() throws CMSItemNotFoundException
@@ -85,4 +87,5 @@ public class RegisterPageController extends AbstractRegisterPageController
 		getRegistrationValidator().validate(form, bindingResult);
 		return processRegisterUserRequest(null, form, bindingResult, model, request, response, redirectModel);
 	}
+
 }

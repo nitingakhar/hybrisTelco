@@ -1,7 +1,6 @@
 <%@ page trimDirectiveWhitespaces="true" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="address" tagdir="/WEB-INF/tags/desktop/address"%>
-
 <div class="span-24">
 	<div class="span-20 last">
 		<div class="accountContentPane clearfix">
