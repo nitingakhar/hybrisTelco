@@ -506,7 +506,15 @@
 	  	<property name="userService" ref="userService" />
 	</bean>
 
+	<bean id="bonStoreCheckoutDao" class="org.bonstore.core.organization.dao.impl.BonStoreCheckoutDaoImpl" />
 
-
+	<bean id="bonStoreCheckoutService"
+		class="org.bonstore.core.organization.impl.BonStoreCheckoutServiceImpl">
+		<property name="bonStoreCheckoutDao" ref="bonStoreCheckoutDao" />
+	</bean>
+	
+<!-- 	<bean id="bonStoreCheckOutFacade" class="org.bonstore.core.facades.impl.BonStoreCheckoutFacadeImpl">
+	  	<property name="bonStoreCheckoutService" ref="bonStoreCheckoutService" />
+	</bean> -->
 
 </beans>

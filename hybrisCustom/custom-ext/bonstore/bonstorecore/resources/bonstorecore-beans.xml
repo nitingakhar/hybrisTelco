@@ -30,5 +30,11 @@
 		<property name="organizationIds" type="java.util.List&lt;java.lang.String>" />
 
 	</bean>
+	
+		<bean class="org.bonstore.data.GiftWrapData">
+		<description>Data object representing a GiftWrap</description>
+		<property name="code" type="String"/>
+		<property name="name" type="String"/>
+	</bean>
 
 </beans>

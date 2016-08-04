@@ -11,8 +11,8 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 <%@ taglib prefix="ycommerce" uri="http://hybris.com/tld/ycommercetags" %>
 
-<c:url value="${nextStepUrl}" var="chooseGiftWrapUrl"/>
-<c:url value="${previousStepUrl}" var="addDeliveryAddressUrl"/>
+<c:url value="${nextStepUrl}" var="choosePaymentMethodUrl"/>
+<c:url value="${previousStepUrl}" var="selectDeliveryMethodUrl"/>
 <template:page pageTitle="${pageTitle}" hideHeaderLinks="true">
 
 	<div id="globalMessages">
@@ -22,16 +22,16 @@
 	<multi-checkout:checkoutProgressBar steps="${checkoutSteps}" progressBarId="${progressBarId}"/>
 	<div class="span-14 append-1">
 		<div id="checkoutContentPanel" class="clearfix">
-			<div class="headline"><spring:theme code="checkout.multi.deliveryMethod.stepHeader"/></div>
-			<div class="description"><p><spring:theme code="checkout.multi.deliveryMethod.selectDeliveryMethodMessage"/></p></div>
-			<form:form id="selectDeliveryMethodForm" action="${request.contextPath}/checkout/multi/delivery-method/select" method="get">
-				<multi-checkout:deliveryMethodSelector deliveryMethods="${deliveryMethods}" selectedDeliveryMethodId="${cartData.deliveryMode.code}"/>
+			<div class="headline"><spring:theme code="checkout.multi.giftWrap.stepHeader"/></div>
+			<div class="description"><p><spring:theme code="checkout.multi.selectGiftWrapMessage"/></p></div>
+			<form:form id="selectGiftWrapForm" action="${request.contextPath}/checkout/multi/gift-wrap/select" method="get">
+				<multi-checkout:giftWrapSelector giftWraps="${giftWraps}" />
 
 				<c:if test="${not empty cartData.deliveryMode.code}">
 					<div class="form-actions">
-						<a class="button" href="${addDeliveryAddressUrl}"><spring:theme code="checkout.multi.cancel" text="Cancel"/></a>
-						<button id="chooseDeliveryMethod_continue_button" class="positive right show_processing_message">
-							<spring:theme code="checkout.multi.deliveryMethod.continue" text="Continue"/>
+						<a class="button" href="${selectDeliveryMethodUrl}"><spring:theme code="checkout.multi.cancel" text="Cancel"/></a>
+						<button id="chooseGiftWrap_continue_button" class="positive right show_processing_message">
+							<spring:theme code="checkout.multi.giftWrap.continue" text="Continue"/>
 						</button>
 					</div>
 				</c:if>
@@ -39,7 +39,7 @@
 		</div>
 	</div>
 	<multi-checkout:checkoutOrderDetails cartData="${cartData}" showShipDeliveryEntries="true" showPickupDeliveryEntries="false" showTax="false"/>
-	<cms:pageSlot position="SideContent" var="feature" element="div" class="span-24 side-content-slot cms_disp-img_slot">
+ 	<cms:pageSlot position="SideContent" var="feature" element="div" class="span-24 side-content-slot cms_disp-img_slot">
 		<cms:component component="${feature}"/>
 	</cms:pageSlot>
 

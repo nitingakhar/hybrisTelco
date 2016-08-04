@@ -67,10 +67,24 @@
 			<map merge="true">
 				<entry key="previous" value-ref="REDIRECT_TO_DELIVERY_ADDRESS"/>
 				<entry key="current" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
-				<entry key="next" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+				<entry key="next" value-ref="REDIRECT_TO_GIFT_WRAP"/>
 			</map>
 		</property>
 		<property name="progressBarId" value="deliveryMethod"/>
+	</bean>
+	
+	<alias name="defaultGiftWrapCheckoutStep" alias="giftWrapCheckoutStep" />
+	<bean id="defaultGiftWrapCheckoutStep"  parent="checkoutStep">
+		<property name="checkoutGroup" ref="defaultCheckoutGroup"/>
+		<property name="checkoutStepValidator" ref="defaultGiftWrapCheckoutValidator"/>
+		<property name="transitions">
+			<map merge="true">
+				<entry key="previous" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
+				<entry key="current" value-ref="REDIRECT_TO_GIFT_WRAP"/>
+				<entry key="next" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+			</map>
+		</property>
+		<property name="progressBarId" value="giftWrap"/>
 	</bean>
 
 	<alias name="defaultPickupLocationCheckoutStep" alias="pickupLocationCheckoutStep" />
@@ -81,7 +95,7 @@
 			<map merge="true">
 				<entry key="previous" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
 				<entry key="current" value-ref="REDIRECT_TO_PICKUP_LOCATION"/>
-				<entry key="next" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+				<entry key="next" value-ref="REDIRECT_TO_GIFT_WRAP"/>
 			</map>
 		</property>
 		<property name="progressBarId" value="deliveryMethod"/>
@@ -93,7 +107,7 @@
 		<property name="checkoutStepValidator" ref="defaultPaymentMethodCheckoutValidator"/>
 		<property name="transitions">
 			<map merge="true">
-				<entry key="previous" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
+				<entry key="previous" value-ref="REDIRECT_TO_GIFT_WRAP"/>
 				<entry key="current" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
 				<entry key="next" value-ref="REDIRECT_TO_SUMMARY"/>
 			</map>
@@ -199,6 +213,7 @@
 				<entry key="multi" value-ref="multiStepCheckout"/>
 				<entry key="delivery-address" value-ref="deliveryAddressCheckoutStep"/>
 				<entry key="delivery-method" value-ref="deliveryMethodCheckoutStep"/>
+				<entry key="gift-wrap" value-ref="giftWrapCheckoutStep"/>
 				<entry key="pickup-location" value-ref="pickupLocationCheckoutStep"/>
 				<entry key="payment-method" value-ref="paymentMethodCheckoutStep"/>
 				<entry key="summary" value-ref="summaryCheckoutStep"/>
@@ -211,6 +226,7 @@
 				<entry key="REDIRECT_TO_PICKUP_LOCATION" value-ref="REDIRECT_TO_PICKUP_LOCATION"/>
 				<entry key="REDIRECT_TO_CART" value-ref="REDIRECT_TO_CART"/>
 				<entry key="REDIRECT_TO_PAYMENT_METHOD" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+				<entry key="REDIRECT_TO_GIFT_WRAP" value-ref="REDIRECT_TO_GIFT_WRAP"/>
 				<entry key="REDIRECT_TO_DELIVERY_METHOD" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
 			</map>
 		</property>
@@ -218,8 +234,9 @@
 			<map merge="true">
 				<entry key="1" value-ref="deliveryAddressCheckoutStep"/>
 				<entry key="2" value-ref="deliveryMethodCheckoutStep"/>
-				<entry key="3" value-ref="paymentMethodCheckoutStep"/>
-				<entry key="4" value-ref="defaultSummaryCheckoutStep"/>
+				<entry key="3" value-ref="giftWrapCheckoutStep"/>
+				<entry key="4" value-ref="paymentMethodCheckoutStep"/>
+				<entry key="5" value-ref="defaultSummaryCheckoutStep"/>
 			</map>
 		</property>
 	</bean>
@@ -284,6 +301,7 @@
 				<entry key="REDIRECT_TO_DELIVERY_ADDRESS" value-ref="REDIRECT_TO_DELIVERY_ADDRESS"/>
 				<entry key="REDIRECT_TO_CART" value-ref="REDIRECT_TO_CART"/>
 				<entry key="REDIRECT_TO_PAYMENT_METHOD" value-ref="REDIRECT_TO_PAYMENT_METHOD"/>
+				<!-- <entry key="REDIRECT_TO_GIFT_WRAP" value-ref="REDIRECT_TO_GIFT_WRAP"/> -->
 				<entry key="REDIRECT_TO_DELIVERY_METHOD" value-ref="REDIRECT_TO_DELIVERY_METHOD"/>
 				<entry key="REDIRECT_TO_SUMMARY" value-ref="REDIRECT_TO_SUMMARY"/>
 			</map>
@@ -292,6 +310,7 @@
 			<map merge="true">
 				<entry key="1" value-ref="responsiveDeliveryAddressCheckoutStep"/>
 				<entry key="2" value-ref="responsiveDeliveryMethodCheckoutStep"/>
+				<!-- <entry key="3" value-ref="responsiveGiftWrapCheckoutStep"/> -->
 				<entry key="3" value-ref="responsivePaymentMethodCheckoutStep"/>
 				<entry key="4" value-ref="responsiveSummaryCheckoutStep"/>
 			</map>
@@ -310,6 +329,9 @@
 	<bean id="defaultMultiStepCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultMultiStepCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
 	<bean id="deliveryAddressCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultDeliveryAddressCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
 	<bean id="deliveryMethodCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultDeliveryMethodCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
+		
+	<bean id="defaultGiftWrapCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultGiftWrapCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
+	
 	<bean id="defaultPaymentMethodCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultPaymentCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
 	<bean id="defaultPickupCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultPickupCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
 	<bean id="defaultSummaryCheckoutValidator" class="org.bonstore.storefront.checkout.steps.validation.impl.DefaultSummaryCheckoutStepValidator" parent="abstractCheckoutStepValidator" />
@@ -347,6 +369,10 @@
 
 	<bean id="REDIRECT_TO_DELIVERY_METHOD" class="java.lang.String">
 		<constructor-arg value="redirect:/checkout/multi/delivery-method/choose"/>
+	</bean>
+	
+	<bean id="REDIRECT_TO_GIFT_WRAP" class="java.lang.String">
+		<constructor-arg value="redirect:/checkout/multi/gift-wrap/choose"/>
 	</bean>
 
 	<bean id="REDIRECT_TO_PICKUP_LOCATION" class="java.lang.String">

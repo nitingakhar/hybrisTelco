@@ -43,6 +43,13 @@
 			<sourceElement type="Customer" qualifier="customers" cardinality="many" collectiontype="list" />
 			<targetElement type="Organization" qualifier="organizations" cardinality="many" collectiontype="list"  />
 		</relation>
+		
+		<relation code="AbstractOrderGiftWrapRelation" localized="false"
+			generate="true" autocreate="true">
+			<sourceElement type="AbstractOrder" qualifier="abstractOrder" cardinality="one" />
+			<targetElement type="GiftWrap" qualifier="giftwraps" cardinality="many" collectiontype="set"/>
+		</relation>
+		
 	</relations>
 
 	<itemtypes>
@@ -164,6 +171,22 @@
 				</attribute>
 			</attributes>
 		</itemtype>
+		
+		<itemtype code="GiftWrap" generate="true" autocreate="true">
+				<deployment table="GiftWrap" typecode="10127" />
+				<attributes>
+				<attribute qualifier="code" type="java.lang.String">
+						<description>ID</description>
+						<persistence type="property" />
+						<modifiers optional="false" unique="true" />
+					</attribute>
+					<attribute qualifier="name" type="localized:java.lang.String">
+						<description>name</description>
+						<persistence type="property" />
+						<modifiers optional="false" />
+					</attribute>
+				</attributes> 
+			</itemtype>
 		
 </typegroup>
 
