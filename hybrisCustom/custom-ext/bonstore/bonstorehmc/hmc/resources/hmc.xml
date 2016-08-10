@@ -7,8 +7,40 @@
 	<explorertree>
 		<group name="bonstoregroup">
 			<typeref type="Organization"/>
+			<typeref type="GiftWrap" />
 		</group>
 	</explorertree>
+	
+	<type name="GiftWrap" mode="append">
+		<organizer>
+			<search mode="replace">
+				<condition attribute="code"/>
+				<condition attribute="name"/>
+			</search>
+			<result>
+				<listview mode="replace">
+					<itemlayout>
+						<attribute name="code"/>
+						<attribute name="name"/>
+					</itemlayout>
+				</listview>
+			</result>
+			<editor>
+				<essentials>
+					<listlayout>
+						<attribute name="code"/>
+					</listlayout>
+				</essentials>
+				<tab name="tab.bonstore.giftwrap">
+					<section name="section.bonstore.giftwrap">
+						<listlayout>
+							<attribute name="name"/>
+						</listlayout>
+					</section>
+				</tab>
+			</editor>
+		</organizer>
+	</type>
 
 	<type name="Organization" mode="append">
 		<organizer>

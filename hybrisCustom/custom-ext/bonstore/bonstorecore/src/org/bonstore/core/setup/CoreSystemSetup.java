@@ -9,7 +9,7 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.core.setup;
 
@@ -21,26 +21,28 @@ import de.hybris.platform.core.initialization.SystemSetup.Type;
 import de.hybris.platform.core.initialization.SystemSetupContext;
 import de.hybris.platform.core.initialization.SystemSetupParameter;
 import de.hybris.platform.core.initialization.SystemSetupParameterMethod;
-import org.bonstore.core.constants.BonstoreCoreConstants;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bonstore.core.constants.BonstoreCoreConstants;
+
 
 /**
  * This class provides hooks into the system's initialization and update processes.
- * 
+ *
  * @see "https://wiki.hybris.com/display/release4/Hooks+for+Initialization+and+Update+Process"
  */
 @SystemSetup(extension = BonstoreCoreConstants.EXTENSIONNAME)
 public class CoreSystemSetup extends AbstractSystemSetup
 {
 	public static final String IMPORT_ACCESS_RIGHTS = "accessRights";
+	public static final String GIFT_WRAPS = "giftWraps";
 
 	/**
 	 * This method will be called by system creator during initialization and system update. Be sure that this method can
 	 * be called repeatedly.
-	 * 
+	 *
 	 * @param context
 	 *           the context provides the selected parameters and values
 	 */
@@ -53,6 +55,8 @@ public class CoreSystemSetup extends AbstractSystemSetup
 
 		importImpexFile(context, "/bonstorecore/import/common/themes.impex");
 		importImpexFile(context, "/bonstorecore/import/common/user-groups.impex");
+		importImpexFile(context, "/bonstorecore/import/common/gift-wraps.impex");
+
 	}
 
 	/**
@@ -65,13 +69,15 @@ public class CoreSystemSetup extends AbstractSystemSetup
 		final List<SystemSetupParameter> params = new ArrayList<>();
 
 		params.add(createBooleanSystemSetupParameter(IMPORT_ACCESS_RIGHTS, "Import Users & Groups", true));
+		params.add(createBooleanSystemSetupParameter(GIFT_WRAPS, "Import Gift Wraps", true));
+
 
 		return params;
 	}
 
 	/**
 	 * This method will be called during the system initialization.
-	 * 
+	 *
 	 * @param context
 	 *           the context provides the selected parameters and values
 	 */
@@ -82,24 +88,24 @@ public class CoreSystemSetup extends AbstractSystemSetup
 
 		final List<String> extensionNames = getExtensionNames();
 
-		processCockpit(context, importAccessRights, extensionNames,"cmscockpit",
+		processCockpit(context, importAccessRights, extensionNames, "cmscockpit",
 				"/bonstorecore/import/cockpits/cmscockpit/cmscockpit-users.impex",
 				"/bonstorecore/import/cockpits/cmscockpit/cmscockpit-access-rights.impex");
 
-		processCockpit(context, importAccessRights, extensionNames,"btgcockpit",
+		processCockpit(context, importAccessRights, extensionNames, "btgcockpit",
 				"/bonstorecore/import/cockpits/cmscockpit/btgcockpit-users.impex",
 				"/bonstorecore/import/cockpits/cmscockpit/btgcockpit-access-rights.impex");
 
-		processCockpit(context, importAccessRights, extensionNames,"productcockpit",
+		processCockpit(context, importAccessRights, extensionNames, "productcockpit",
 				"/bonstorecore/import/cockpits/productcockpit/productcockpit-users.impex",
 				"/bonstorecore/import/cockpits/productcockpit/productcockpit-access-rights.impex",
 				"/bonstorecore/import/cockpits/productcockpit/productcockpit-constraints.impex");
 
-		processCockpit(context, importAccessRights, extensionNames,"cscockpit",
+		processCockpit(context, importAccessRights, extensionNames, "cscockpit",
 				"/bonstorecore/import/cockpits/cscockpit/cscockpit-users.impex",
 				"/bonstorecore/import/cockpits/cscockpit/cscockpit-access-rights.impex");
 
-		processCockpit(context, importAccessRights, extensionNames,"reportcockpit",
+		processCockpit(context, importAccessRights, extensionNames, "reportcockpit",
 				"/bonstorecore/import/cockpits/reportcockpit/reportcockpit-users.impex",
 				"/bonstorecore/import/cockpits/reportcockpit/reportcockpit-access-rights.impex");
 
@@ -110,9 +116,12 @@ public class CoreSystemSetup extends AbstractSystemSetup
 	}
 
 	protected void processCockpit(final SystemSetupContext context, final boolean importAccessRights,
-								final List<String> extensionNames, final String cockpit, final String... files) {
-		if (importAccessRights && extensionNames.contains(cockpit)) {
-			for (String file : files) {
+			final List<String> extensionNames, final String cockpit, final String... files)
+	{
+		if (importAccessRights && extensionNames.contains(cockpit))
+		{
+			for (final String file : files)
+			{
 				importImpexFile(context, file);
 			}
 		}
