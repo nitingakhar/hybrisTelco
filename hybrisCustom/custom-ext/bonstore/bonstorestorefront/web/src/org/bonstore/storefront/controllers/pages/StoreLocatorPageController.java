@@ -9,11 +9,12 @@
  * Information and shall use it only in accordance with the terms of the
  * license agreement you entered into with hybris.
  *
- *  
+ *
  */
 package org.bonstore.storefront.controllers.pages;
 
 import de.hybris.platform.acceleratorservices.customer.CustomerLocationService;
+import de.hybris.platform.acceleratorservices.customer.impl.DefaultCustomerLocationService;
 import de.hybris.platform.acceleratorservices.store.data.UserLocationData;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.Breadcrumb;
 import de.hybris.platform.acceleratorstorefrontcommons.breadcrumb.impl.StorefinderBreadcrumbBuilder;
@@ -30,11 +31,17 @@ import de.hybris.platform.cms2.model.pages.AbstractPageModel;
 import de.hybris.platform.cms2.model.pages.ContentPageModel;
 import de.hybris.platform.commercefacades.storefinder.StoreFinderFacade;
 import de.hybris.platform.commercefacades.storelocator.data.PointOfServiceData;
+import de.hybris.platform.commercefacades.storelocator.impl.DefaultStoreLocatorFacade;
 import de.hybris.platform.commerceservices.search.pagedata.PageableData;
 import de.hybris.platform.commerceservices.store.data.GeoPoint;
 import de.hybris.platform.commerceservices.storefinder.data.StoreFinderSearchPageData;
+import de.hybris.platform.core.model.user.AddressModel;
+import de.hybris.platform.core.model.user.UserModel;
 import de.hybris.platform.servicelayer.config.ConfigurationService;
-import org.bonstore.storefront.controllers.ControllerConstants;
+import de.hybris.platform.servicelayer.user.UserService;
+import de.hybris.platform.storelocator.GPS;
+import de.hybris.platform.storelocator.GeoWebServiceWrapper;
+import de.hybris.platform.storelocator.data.AddressData;
 
 import java.util.List;
 
@@ -44,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.bonstore.storefront.controllers.ControllerConstants;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,6 +89,17 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	@Resource(name = "customerLocationService")
 	private CustomerLocationService customerLocationService;
 
+	@Resource(name = "userService")
+	private UserService userService;
+
+	@Resource(name = "storeLocatorFacade")
+	private DefaultStoreLocatorFacade storeLocatorFacade;
+
+	@Resource(name = "defaultCustomerLocationService")
+	private DefaultCustomerLocationService defaultCustomerLocationService;
+
+	@Resource(name = "defaultGoogleMapsGeoServiceWrapper")
+	private GeoWebServiceWrapper defaultGoogleMapsGeoServiceWrapper;
 
 	@ModelAttribute("googleApiVersion")
 	public String getGoogleApiVersion()
@@ -103,6 +122,20 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	@RequestMapping(method = RequestMethod.GET)
 	public String getStoreFinderPage(final Model model) throws CMSItemNotFoundException
 	{
+		final UserModel userModel = userService.getCurrentUser();
+		final AddressModel addressModel = userModel.getDefaultShipmentAddress();
+
+		if (addressModel != null)
+		{
+			final GPS gps = getDefaultGoogleMapsGeoServiceWrapper().geocodeAddress(new AddressData(addressModel));
+
+			final GeoPoint geoPoint = new GeoPoint();
+			geoPoint.setLatitude(gps.getDecimalLatitude());
+			geoPoint.setLongitude(gps.getDecimalLongitude());
+
+			findStoresForDefaultShippingAddress(geoPoint, model, addressModel);
+		}
+
 		setUpPageForms(model);
 		model.addAttribute(WebConstants.BREADCRUMBS_KEY, storefinderBreadcrumbBuilder.getBreadcrumbs());
 		storeCmsPageInModel(model, getStoreFinderPage());
@@ -176,10 +209,9 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 	{
 		model.addAttribute(ThirdPartyConstants.SeoRobots.META_ROBOTS, ThirdPartyConstants.SeoRobots.NOINDEX_FOLLOW);
 		final String metaKeywords = MetaSanitizerUtil.sanitizeKeywords(locationQuery);
-		final String metaDescription = MetaSanitizerUtil.sanitizeDescription(getSiteName()
-				+ " "
-				+ getMessageSource().getMessage("storeFinder.meta.description.results", null, "storeFinder.meta.description.results",
-						getI18nService().getCurrentLocale()) + " " + locationQuery);
+		final String metaDescription = MetaSanitizerUtil
+				.sanitizeDescription(getSiteName() + " " + getMessageSource().getMessage("storeFinder.meta.description.results", null,
+						"storeFinder.meta.description.results", getI18nService().getCurrentLocale()) + " " + locationQuery);
 		super.setUpMetaData(model, metaKeywords, metaDescription);
 	}
 
@@ -252,12 +284,9 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 
 	protected void setUpPageTitle(final String searchText, final Model model)
 	{
-		storeContentPageTitleInModel(
-				model,
-				getPageTitleResolver().resolveContentPageTitle(
-						getMessageSource().getMessage("storeFinder.meta.title", null, "storeFinder.meta.title",
-								getI18nService().getCurrentLocale())
-								+ " " + searchText));
+		storeContentPageTitleInModel(model,
+				getPageTitleResolver().resolveContentPageTitle(getMessageSource().getMessage("storeFinder.meta.title", null,
+						"storeFinder.meta.title", getI18nService().getCurrentLocale()) + " " + searchText));
 	}
 
 	protected AbstractPageModel getStoreFinderPage() throws CMSItemNotFoundException
@@ -267,11 +296,51 @@ public class StoreLocatorPageController extends AbstractSearchPageController
 
 	/**
 	 * Get the default search page size.
-	 * 
+	 *
 	 * @return the number of results per page, <tt>0</tt> (zero) indicated 'default' size should be used
 	 */
 	protected int getStoreLocatorPageSize()
 	{
 		return getSiteConfigService().getInt("storefront.storelocator.pageSize", 0);
+	}
+
+	public void findStoresForDefaultShippingAddress(final GeoPoint geoPoint, final Model model, final AddressModel addressModel)
+			throws CMSItemNotFoundException
+	{
+		if (addressModel != null)
+		{
+			setUpMetaData(addressModel.getTown(), model);
+			setUpPageForms(model);
+			setUpPageTitle(addressModel.getTown(), model);
+
+			setUpSearchResultsForPositionForDefaultShippingAddress(geoPoint,
+					createPageableData(0, getStoreLocatorPageSize(), null, ShowMode.Page), model);
+		}
+		else
+		{
+			GlobalMessages.addErrorMessage(model, "storelocator.error.no.results.subtitle");
+			model.addAttribute(WebConstants.BREADCRUMBS_KEY, storefinderBreadcrumbBuilder.getBreadcrumbsForLocationSearch("City"));
+		}
+	}
+
+	protected void setUpSearchResultsForPositionForDefaultShippingAddress(final GeoPoint geoPoint, final PageableData pageableData,
+			final Model model)
+	{
+		// Run the location search & populate the model
+		final StoreFinderSearchPageData<PointOfServiceData> searchResult = storeFinderFacade.positionSearch(geoPoint, pageableData);
+
+		final GeoPoint newGeoPoint = new GeoPoint();
+		newGeoPoint.setLatitude(searchResult.getSourceLatitude());
+		newGeoPoint.setLongitude(searchResult.getSourceLongitude());
+
+		updateLocalUserPreferences(newGeoPoint, searchResult.getLocationText());
+		setUpPageData(model, searchResult, storefinderBreadcrumbBuilder.getBreadcrumbsForCurrentPositionSearch());
+		setUpPosition(model, newGeoPoint);
+		setUpNoResultsErrorMessage(model, searchResult);
+	}
+
+	public GeoWebServiceWrapper getDefaultGoogleMapsGeoServiceWrapper()
+	{
+		return defaultGoogleMapsGeoServiceWrapper;
 	}
 }
