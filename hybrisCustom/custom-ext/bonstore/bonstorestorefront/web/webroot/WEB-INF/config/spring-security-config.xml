@@ -354,6 +354,30 @@
 		<property name="countryConverter" ref="countryConverter"/>
 		<property name="groupCartModificationListConverter" ref="groupCartModificationListConverter" />
 	</bean>
+	
+	<bean id="bonStoreFrontCheckoutFacade" class="org.bonstore.storefront.facade.BonStoreFrontCheckoutFacadeImpl">
+	<property name="bonStoreCheckoutService" ref="bonStoreCheckoutService"/>
+	<property name="modelService" ref="modelService"/>
+	<property name="addressConverter" ref="addressConverter"/>
+	<property name="addressReversePopulator" ref="addressReversePopulator"/>
+	<property name="baseStoreService" ref="baseStoreService"/>
+	<property name="cardTypeConverter" ref="cardTypeConverter"/>
+	<property name="cartFacade" ref="cartFacade"/>
+	<property name="cartService" ref="cartService"/>
+	<property name="checkoutCustomerStrategy" ref="checkoutCustomerStrategy"/>
+	<property name="commerceCardTypeService" ref="commerceCardTypeService"/>
+	<property name="commerceCheckoutService" ref="commerceCheckoutService"/>
+	<property name="countryConverter" ref="countryConverter"/>
+	<property name="creditCardPaymentInfoConverter" ref="creditCardPaymentInfoConverter"/>
+	<property name="customerAccountService" ref="customerAccountService"/>
+	<property name="deliveryModeConverter" ref="deliveryModeConverter"/>
+	<property name="deliveryService" ref="deliveryService"/>
+	<property name="enumerationService" ref="enumerationService"/>
+	<property name="priceDataFactory" ref="priceDataFactory"/>
+	<property name="userService" ref="userService"/>
+	<property name="zoneDeliveryModeConverter" ref="zoneDeliveryModeConverter"/>
+	<property name="commonI18NService" ref="commonI18NService"/>
+	</bean>
 
 	<bean id="bonStoreCommerceCartMergingStrategy" class="org.bonstore.storefront.order.impl.BonStoreCommerceCartMergingStrategy" >
 		<property name="userService" ref="userService"/>

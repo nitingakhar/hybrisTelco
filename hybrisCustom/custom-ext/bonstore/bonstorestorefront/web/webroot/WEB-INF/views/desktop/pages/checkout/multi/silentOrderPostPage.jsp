@@ -23,7 +23,6 @@
 	</div>
 
 	<multi-checkout:checkoutProgressBar steps="${checkoutSteps}" progressBarId="${progressBarId}"/>
-
 	<c:if test="${not empty paymentFormUrl}">
 		<div class="span-14 append-1">
 			<div id="checkoutContentPanel" class="clearfix">
@@ -103,7 +102,7 @@
 
 
 					<div class="form-actions">
-						<c:url value="/checkout/multi/delivery-method/choose" var="chooseDeliveryMethodUrl"/>
+						<c:url value="/checkout/multi/gift-wrap/choose" var="chooseDeliveryMethodUrl"/>
 						<a class="button" href="${chooseDeliveryMethodUrl}"><spring:theme code="checkout.multi.cancel" text="Cancel"/></a>
 						<button class="positive right submit_silentOrderPostForm" tabindex="20">
 							<spring:theme code="checkout.multi.paymentMethod.continue" text="Continue"/>

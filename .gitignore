@@ -37,10 +37,6 @@ git_info.properties
 **/build.xml
 
 **/gensrc
-**/gensrc/*
-**/gensrc/**
-*/gensrc/**
-*/gensrc/*
 
 **/eclipsebin
 **/extensioninfo.xsd
